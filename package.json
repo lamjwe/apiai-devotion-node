@@ -9,6 +9,7 @@
   },
   "author": "Jonathan Lam",
   "dependencies": {
+    "actions-on-google": "^1.1.1",
     "body-parser": "^1.15.0",
     "express": "^4.13.4",
     "request": "^2.81.0",
