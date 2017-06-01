@@ -65,6 +65,12 @@ restService.post('/hook', function (req, res) {
                         
                         console.log("body.response ====>" + body.response);
                         console.log("body.result ====>" + body.result);
+
+                        var response_body = body;
+                        var text = response_body.response.search.result.passages[0]["text"];
+
+                        console.log(text);
+
                         // console.log("BODY.result.body[\"response\"] ====>" + response.body["response"]);
 
                         // console.log("response.body[\"response\"][\"search\"] ====>" + response.body["response"]["search"]);
