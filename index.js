@@ -21,8 +21,8 @@ restService.post('/hook', function (req, res) {
 
     console.log('hook request');
     const app = new App({req, res});
-    console.log('Request headers: ' + JSON.stringify(request.headers));
-    console.log('Request body: ' + JSON.stringify(request.body));
+    console.log('Request headers: ' + JSON.stringify(req.headers));
+    console.log('Request body: ' + JSON.stringify(req.body));
 
     try {
         var speech = 'empty speech';
