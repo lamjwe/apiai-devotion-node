@@ -40,10 +40,12 @@ restService.post('/hook', function (req, res) {
                     var query = makeQuery(requestBody.result);
 
                     var url = baseurl + query;
-
+                    var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
                     request({
                         url: url,
-                        token: 'c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN',
+                        headers: {
+                            'Authorization': 'Basic ' + auth
+                        },
                         method: 'GET'
                     }, function (error, response) {
                         if (error) {
