@@ -54,7 +54,7 @@ restService.post('/hook', function (req, res) {
                             console.log('Error: ', response.body.error);
                         }
 
-                        console.log("SUCCESS: " + JSON.stringify(response));
+                        console.log("SUCCESS: " + response.search.result.passages["text"]);
                     });
                 }
             }
