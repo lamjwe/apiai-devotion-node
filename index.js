@@ -47,7 +47,7 @@ restService.post('/hook', function (req, res) {
                             'Authorization': 'Basic ' + auth
                         },
                         method: 'GET'
-                    }, function (error, response) {
+                    }, function (error, response, body) {
                         if (error) {
                             console.log('Error sending message: ', error);
                         } else if (response.body.error) {
@@ -60,6 +60,8 @@ restService.post('/hook', function (req, res) {
                         console.log("response.body[\"response\"] ====>" + response.body["response"]);
                         console.log("response.body.response ====>" + response.body.response);
                         console.log("response.body.result ====>" + response.body.result);
+
+                        console.log("BODY ====>" + body);
 
                         // console.log("response.body[\"response\"][\"search\"] ====>" + response.body["response"]["search"]);
                     });
