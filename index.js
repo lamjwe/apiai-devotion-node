@@ -67,7 +67,7 @@ restService.post('/hook', function (req, res) {
                         console.log(strippedText);
 
                         return res.json({
-                            speech: speech,
+                            speech: "Here is the passage you searched for.",
                             displayText: strippedText,
                             source: 'apiai-devotion'
                         });
