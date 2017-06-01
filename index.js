@@ -3,6 +3,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
+const striptags = require('striptags');
 
 const restService = express();
 restService.use(bodyParser.json());
@@ -61,9 +62,8 @@ restService.post('/hook', function (req, res) {
 
                         console.log(text);
                         console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                        var tmp = document.createElement("DIV");
-                        tmp.innerHTML = text;
-                        var strippedText =  tmp.innerText;
+
+                        var strippedText = striptags(text);
                         console.log(strippedText);
 
                         return res.json({
