@@ -85,7 +85,7 @@ restService.post('/hook', function (req, res) {
         let actionMap = new Map();
         actionMap.set(GET_PASSAGE, getPassage);
 
-        app.handleRequest(actionMap);
+        //app.handleRequest(actionMap);
 
 
     } catch (err) {
