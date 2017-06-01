@@ -79,15 +79,11 @@ restService.post('/hook', function (req, res) {
             //     console.log(strippedText);
             //     app.tell('Here is the passage: ' + strippedText);
             // });
-            
         }
 
         let actionMap = new Map();
         actionMap.set(GET_PASSAGE, getPassage);
-
-        //app.handleRequest(actionMap);
-
-
+        app.handleRequest(actionMap);
     } catch (err) {
         console.error("Can't process request", err);
 
