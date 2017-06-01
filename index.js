@@ -48,36 +48,37 @@ restService.post('/hook', function (req, res) {
         function getPassage(app) {
             console.log("IN GETTING PASSAGE");
             var baseurl = "https://bibles.org/v2/passages.js?q[]=";
+            app.tell('Here is the passage you are looking for : ');
             var query = makeQuery(app);
 
             var url = baseurl + query;
             console.log("URL : " + url);
             var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
-            request({
-                url: url,
-                headers: {
-                    'Authorization': 'Basic ' + auth
-                },
-                method: 'GET'
-            }, function (error, response, body) {
-                if (error) {
-                    console.log('Error sending message: ', error);
-                } else if (response.body.error) {
-                    console.log('Error: ', response.body.error);
-                }
+            // request({
+            //     url: url,
+            //     headers: {
+            //         'Authorization': 'Basic ' + auth
+            //     },
+            //     method: 'GET'
+            // }, function (error, response, body) {
+            //     if (error) {
+            //         console.log('Error sending message: ', error);
+            //     } else if (response.body.error) {
+            //         console.log('Error: ', response.body.error);
+            //     }
 
-                console.log("SUCCESS: ");
-                console.log("+++++++++++++++++++++++++++");
-                var obj = JSON.parse(body);
-                var text = obj.response["search"].result.passages[0]["text"];
+            //     console.log("SUCCESS: ");
+            //     console.log("+++++++++++++++++++++++++++");
+            //     var obj = JSON.parse(body);
+            //     var text = obj.response["search"].result.passages[0]["text"];
 
-                console.log(text);
-                console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            //     console.log(text);
+            //     console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-                var strippedText = striptags(text);
-                console.log(strippedText);
-                app.tell('Here is the passage: ' + strippedText);
-            });
+            //     var strippedText = striptags(text);
+            //     console.log(strippedText);
+            //     app.tell('Here is the passage: ' + strippedText);
+            // });
             
         }
 
