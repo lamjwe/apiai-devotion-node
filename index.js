@@ -3,6 +3,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+process.env.DEBUG = 'actions-on-google:*';
+const App = require('actions-on-google').ApiAiApp;
 
 const restService = express();
 restService.use(bodyParser.json());
@@ -17,6 +19,7 @@ restService.post('/hook', function (req, res) {
         if (req.body) {
             var requestBody = req.body;
 
+            console.log("RequestBody: " + requestBody);
             if (requestBody.result) {
                 speech = '';
 
