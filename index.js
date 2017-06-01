@@ -61,7 +61,10 @@ restService.post('/hook', function (req, res) {
 
                         console.log(text);
                         console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                        console.log($("<div/>").text(mytest).text());
+                        var tmp = document.createElement("DIV");
+                        tmp.innerHTML = text;
+                        var strippedText =  tmp.innerText;
+                        console.log(strippedText);
 
                         return res.json({
                             speech: speech,
