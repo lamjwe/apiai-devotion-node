@@ -55,34 +55,19 @@ restService.post('/hook', function (req, res) {
                         }
 
                         console.log("SUCCESS: ");
-                        console.log("response.body ====> " + response.body);
-                        console.log("==========================");
-                        console.log("response.body[\"response\"] ====>" + response.body["response"]);
-                        console.log("response.body.response ====>" + response.body.response);
-                        console.log("response.body.result ====>" + response.body.result);
-
-                        console.log("BODY ====>" + body);
-                        
-                        console.log("body.response ====>" + body.response);
-                        console.log("body.result ====>" + body.result);
-
                         console.log("+++++++++++++++++++++++++++");
                         var obj = JSON.parse(body);
-                        console.log("obj ======> " + JSON.stringify(obj));
-                        console.log("obj.response ======> " + obj.response);
-                        console.log("obj.response[\"search\"] ======> " + obj.response["search"]);
-                        console.log("obj.response[\"search\"].result ======> " + obj.response["search"].result);
-                        console.log("obj.response[\"search\"].result.passages ======> " + obj.response["search"].result.passages);
-                        console.log("obj.response[\"search\"].result.passages[0][\"text\"] ======> " + obj.response["search"].result.passages[0]["text"]);
-                        var response_body = body;
-                        var response_body_response = response_body.response;
-                        var text = response_body_response.search.result.passages[0]["text"];
+                        var text = obj.response["search"].result.passages[0]["text"];
 
                         console.log(text);
+                        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                        console.log($("<div/>").text(mytest).text());
 
-                        // console.log("BODY.result.body[\"response\"] ====>" + response.body["response"]);
-
-                        // console.log("response.body[\"response\"][\"search\"] ====>" + response.body["response"]["search"]);
+                        return res.json({
+                            speech: speech,
+                            displayText: text,
+                            source: 'apiai-devotion'
+                        });
                     });
                 }
             }
