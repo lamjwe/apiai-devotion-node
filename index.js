@@ -43,7 +43,7 @@ restService.post('/hook', function (req, res) {
 
                     request({
                         url: url,
-                        qs: {access_token: 'c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN'},
+                        token: 'c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN',
                         method: 'GET'
                     }, function (error, response) {
                         if (error) {
