@@ -7,7 +7,7 @@ const request = require('request');
 const restService = express();
 restService.use(bodyParser.json());
 
-const SHOW_PASSAGE = 'showing_passage';
+const GET_PASSAGE = 'get_passage';
 const BOOK_ARGUMENT = 'Book';
 const CHAPTER_ARGUMENT = 'Chapter';
 const START_VERSE_ARGUMENT = 'StartVerse';
@@ -35,7 +35,7 @@ restService.post('/hook', function (req, res) {
                 // if (requestBody.result.action) {
                 //     speech += 'action: ' + requestBody.result.action;
                 // }
-                if (requestBody.result.action == SHOW_PASSAGE) {
+                if (requestBody.result.action == GET_PASSAGE) {
                     var baseurl = "https://bibles.org/v2/passages.js?q[]=";
                     var query = makeQuery(requestBody.result);
 
