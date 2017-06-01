@@ -25,38 +25,33 @@ restService.post('/hook', function (req, res) {
     console.log('Request body: ' + JSON.stringify(req.body));
 
     try {
-        var speech = 'empty speech';
+        // var speech = 'empty speech';
 
-        if (req.body) {
-            var requestBody = req.body;
+        // if (req.body) {
+        //     var requestBody = req.body;
 
-            console.log("RequestBody: " + JSON.stringify(requestBody));
-            if (requestBody.result) {
-                speech = '';
+        //     console.log("RequestBody: " + JSON.stringify(requestBody));
+        //     if (requestBody.result) {
+        //         speech = '';
 
-                if (requestBody.result.fulfillment) {
-                    speech += requestBody.result.fulfillment.speech;
-                    speech += ' ';
-                }
+        //         if (requestBody.result.fulfillment) {
+        //             speech += requestBody.result.fulfillment.speech;
+        //             speech += ' ';
+        //         }
+        //     }
+        // }
 
-                // if (requestBody.result.action) {
-                //     speech += 'action: ' + requestBody.result.action;
-                // }
-                if (requestBody.result.action == GET_PASSAGE) {
-                    
-                }
-            }
-        }
-
-        console.log('result: ', speech);
+        // console.log('result: ', speech);
 
         //return null;
         // Make a silly name
-        function getPassage (app) {
+        function getPassage(app) {
+            console.log("IN GETTING PASSAGE");
             var baseurl = "https://bibles.org/v2/passages.js?q[]=";
             var query = makeQuery(app);
 
             var url = baseurl + query;
+            console.log("URL : " + url);
             var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
             request({
                 url: url,
