@@ -42,7 +42,8 @@ restService.post('/hook', function (req, res) {
 
                     var url = baseurl + query;
                     var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
-                    request({
+                    
+                    var passage = request({
                         url: url,
                         headers: {
                             'Authorization': 'Basic ' + auth
@@ -66,11 +67,7 @@ restService.post('/hook', function (req, res) {
                         var strippedText = striptags(text);
                         console.log(strippedText);
 
-                        return res.json({
-                            speech: speech,
-                            displayText: text,
-                            source: 'apiai-devotion'
-                        });
+                        return strippedText
                     });
                 }
             }
@@ -80,7 +77,7 @@ restService.post('/hook', function (req, res) {
 
         return res.json({
             speech: speech,
-            displayText: speech,
+            displayText: passage,
             source: 'apiai-webhook-sample'
         });
     } catch (err) {
