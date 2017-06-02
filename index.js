@@ -58,19 +58,31 @@ restService.post('/hook', function (req, res) {
                         console.log("SUCCESS: ");
                         console.log("+++++++++++++++++++++++++++");
                         var obj = JSON.parse(body);
-                        var text = obj.response["search"].result.passages[0]["text"];
+                        var text;
+                        try {
+                            text = obj.response["search"].result.passages[0]["text"];
+                            console.log(text);
+                            console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-                        console.log(text);
-                        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                            var strippedText = striptags(text);
+                            console.log(strippedText);
 
-                        var strippedText = striptags(text);
-                        console.log(strippedText);
+                            return res.json({
+                                speech: "Here is the passage you searched for.",
+                                displayText: strippedText,
+                                source: 'apiai-devotion'
+                            });
+                        } catch (err) {
+                            console.error("ERROR == > ", err);
+                            return res.json({
+                                speech: "Sorry, cannot not find the given passage.",
+                                displayText: "Sorry, cannot not find the given passage.",
+                                source: 'apiai-devotion'
+                            });
+                        }
+                        
 
-                        return res.json({
-                            speech: "Here is the passage you searched for.",
-                            displayText: strippedText,
-                            source: 'apiai-devotion'
-                        });
+                        
                     });
                 }
             }
