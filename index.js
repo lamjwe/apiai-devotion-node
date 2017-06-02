@@ -108,16 +108,13 @@ restService.post('/hook', function (req, res) {
                             var resultToDisplay = "";
 
                             console.log("======== DEBUG ========");
-                            console.log("obj.response[\"search\"].result : " +  obj.response["search"].result);
-                            console.log("-------------------------------");
-                            console.log("JSON.stringify(obj.response[\"search\"].result) : " + JSON.stringify(obj.response["search"].result));
-                            console.log("-------------------------------");
-                            console.log("obj.response[\"search\"].result.verses : " + obj.response["search"].result.verses);
-                            console.log("-------------------------------");
-                            console.log("obj.response[\"search\"].result[0] : " + obj.response["search"].result[0]);
-                            console.log("-------------------------------");
-                            console.log("obj.response[\"search\"].result[\"verses\"] : " + obj.response["search"].result["verses"]);
-
+                            // console.log("obj.response[\"search\"].result : " +  obj.response["search"].result);
+                            // console.log("-------------------------------");
+                            // console.log("JSON.stringify(obj.response[\"search\"].result) : " + JSON.stringify(obj.response["search"].result));
+                            // console.log("-------------------------------");
+                            // console.log("obj.response[\"search\"].result.verses : " + obj.response["search"].result.verses);
+                            // console.log("-------------------------------");
+                            
                             resultVerses.forEach(function(verse) {
                                 console.log("verse ==> " + verse);
                                 console.log("verse.reference ==> " + verse.reference);
@@ -133,7 +130,7 @@ restService.post('/hook', function (req, res) {
 
                             return res.json({
                                 speech: "Here are the results of your search: ",
-                                displayText: strippedText,
+                                displayText: resultToDisplay,
                                 source: 'apiai-devotion'
                             });
                         } catch (err) {
