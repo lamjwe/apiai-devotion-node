@@ -83,7 +83,7 @@ restService.post('/hook', function (req, res) {
                     var baseurl = "https://bibles.org/v2/search.js?query=";
                     var query = makeQueryKeywordSearch(requestBody.result);
                     console.log("QUERY == > " + query);
-                    var url = baseurl + query;
+                    var url = baseurl + query + "&version=eng-KJVA";
                     console.log("URL == > " + url);
                     var auth = new Buffer(API_KEY + ':' + 'X').toString('base64');
                     request({
