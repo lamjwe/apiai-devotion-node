@@ -111,6 +111,8 @@ restService.post('/hook', function (req, res) {
                             console.log("-------------------------------");
                             console.log("obj.response[\"search\"].result.verses : " + obj.response["search"].result.verses);
                             console.log("-------------------------------");
+                            console.log("obj.response[\"search\"].result[0] : " + obj.response["search"].result[0]);
+                            console.log("-------------------------------");
                             console.log("obj.response[\"search\"].result[\"verses\"] : " + obj.response["search"].result["verses"]);
 
                             resultVerses.forEach(function(verse) {
