@@ -106,6 +106,13 @@ restService.post('/hook', function (req, res) {
                             var resultVerses = obj.response["search"].result.verses;
                             var resultToDisplay = "";
 
+                            console.log("======== DEBUG ========");
+                            console.log("obj.response[\"search\"].result : " +  obj.response["search"].result);
+                            console.log("-------------------------------");
+                            console.log("obj.response[\"search\"].result.verses : " + obj.response["search"].result.verses);
+                            console.log("-------------------------------");
+                            console.log("obj.response[\"search\"].result[\"verses\"] : " + obj.response["search"].result["verses"]);
+
                             resultVerses.forEach(function(verse) {
                                 console.log("verse ==> " + verse);
                                 console.log("verse.reference ==> " + verse.reference);
