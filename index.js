@@ -116,18 +116,20 @@ restService.post('/hook', function (req, res) {
                             // console.log("-------------------------------");
                             
                             resultVerses.forEach(function(verse) {
-                                console.log("verse ==> " + verse);
-                                console.log("verse.reference ==> " + verse.reference);
-                                console.log("verse.text ==> " + verse.text);
+                                // console.log("verse ==> " + verse);
+                                // console.log("verse.reference ==> " + verse.reference);
+                                // console.log("verse.text ==> " + verse.text);
                                 
                                 text = verse.text;
-                                console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                                
                                 var strippedText = striptags(text);
-                                console.log("STRIPPED TEXT: " + strippedText);
+                                // console.log("STRIPPED TEXT: " + strippedText);
 
                                 resultToDisplay += verse.reference + " \n\n" + strippedText + "\n\n";
                             });
 
+                            console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                            console.log("resultToDisplay ===> " + resultToDisplay);
                             return res.json({
                                 speech: "Here are the results of your search: ",
                                 displayText: resultToDisplay,
