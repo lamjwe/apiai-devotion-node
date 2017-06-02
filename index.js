@@ -9,10 +9,13 @@ const restService = express();
 restService.use(bodyParser.json());
 
 const GET_PASSAGE = 'get_passage';
+const SEARCH_KEYWORD = 'search_keyword';
 const BOOK_ARGUMENT = 'Book';
 const CHAPTER_ARGUMENT = 'Chapter';
 const START_VERSE_ARGUMENT = 'StartVerse';
 const END_VERSE_ARGUMENT = 'EndVerse';
+const KEYWORD_ARGUMENT = 'Keyword';
+const API_KEY = 'c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN';
 
 restService.post('/hook', function (req, res) {
 
@@ -33,15 +36,12 @@ restService.post('/hook', function (req, res) {
                     speech += ' ';
                 }
 
-                // if (requestBody.result.action) {
-                //     speech += 'action: ' + requestBody.result.action;
-                // }
                 if (requestBody.result.action == GET_PASSAGE) {
                     var baseurl = "https://bibles.org/v2/passages.js?q[]=";
-                    var query = makeQuery(requestBody.result);
+                    var query = makeQueryGetPassage(requestBody.result);
 
                     var url = baseurl + query;
-                    var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
+                    var auth = new Buffer(API_KEY + ':' + 'X').toString('base64');
                     request({
                         url: url,
                         headers: {
@@ -61,11 +61,9 @@ restService.post('/hook', function (req, res) {
                         var text;
                         try {
                             text = obj.response["search"].result.passages[0]["text"];
-                            console.log(text);
                             console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-
                             var strippedText = striptags(text);
-                            console.log(strippedText);
+                            console.log("STRIPPED TEXT: " + strippedText);
 
                             return res.json({
                                 speech: "Here is the passage you searched for.",
@@ -80,9 +78,60 @@ restService.post('/hook', function (req, res) {
                                 source: 'apiai-devotion'
                             });
                         }
-                        
+                    });
+                } else if (requestBody.result.action == SEARCH_KEYWORD) {
+                    var baseurl = "https://bibles.org/v2/search.js?query=";
+                    var query = makeQueryKeywordSearch(requestBody.result);
 
-                        
+                    var url = baseurl + query;
+                    var auth = new Buffer(API_KEY + ':' + 'X').toString('base64');
+                    request({
+                        url: url,
+                        headers: {
+                            'Authorization': 'Basic ' + auth
+                        },
+                        method: 'GET'
+                    }, function (error, response, body) {
+                        if (error) {
+                            console.log('Error sending message: ', error);
+                        } else if (response.body.error) {
+                            console.log('Error: ', response.body.error);
+                        }
+
+                        console.log("SUCCESS GETTING RESULTS FROM KEYWORD SEARCH: ");
+                        console.log("+++++++++++++++++++++++++++");
+                        var obj = JSON.parse(body);
+                        var text;
+                        try {
+                            var resultVerses = obj.response["search"].result.verses;
+                            var resultToDisplay = "";
+
+                            resultVerses.forEach(function(verse) {
+                                console.log("verse ==> " + verse);
+                                console.log("verse.reference ==> " + verse.reference);
+                                console.log("verse.text ==> " + verse.text);
+                                
+                                text = verse.text;
+                                console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                                var strippedText = striptags(text);
+                                console.log("STRIPPED TEXT: " + strippedText);
+
+                                resultToDisplay += verse.reference + " \n\n" + strippedText + "\n\n";
+                            });
+
+                            return res.json({
+                                speech: "Here are the results of your search: ",
+                                displayText: strippedText,
+                                source: 'apiai-devotion'
+                            });
+                        } catch (err) {
+                            console.error("ERROR == > ", err);
+                            return res.json({
+                                speech: "Sorry, cannot not find the given passage.",
+                                displayText: "Sorry, cannot not find the given passage.",
+                                source: 'apiai-devotion'
+                            });
+                        }
                     });
                 }
             }
@@ -103,7 +152,7 @@ restService.post('/hook', function (req, res) {
     }
 });
 
-function makeQuery(result) {
+function makeQueryGetPassage(result) {
     var parameters = result.parameters;
     var book = parameters[BOOK_ARGUMENT];
     if (!book) {
@@ -125,7 +174,17 @@ function makeQuery(result) {
         end_verse = "ff"
     }
 
-    return book + "+" + chapter + ":" + start_verse + "-" + end_verse + "&version=eng-GNTD"
+    return book + "+" + chapter + ":" + start_verse + "-" + end_verse + "&version=eng-KJVA"
+}
+
+function makeQueryKeywordSearch(result) {
+    var parameters = result.parameters;
+    var keyword = parameters[KEYWORD_ARGUMENT];
+    if (!keyword) {
+        return None;
+    }
+
+    return keyword;
 }
     
 
