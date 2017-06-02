@@ -27,7 +27,7 @@ restService.post('/hook', function (req, res) {
         if (req.body) {
             var requestBody = req.body;
 
-            console.log("RequestBody: " + JSON.stringify(requestBody));
+            // console.log("RequestBody: " + JSON.stringify(requestBody));
             if (requestBody.result) {
                 speech = '';
 
@@ -82,8 +82,9 @@ restService.post('/hook', function (req, res) {
                 } else if (requestBody.result.action == SEARCH_KEYWORD) {
                     var baseurl = "https://bibles.org/v2/search.js?query=";
                     var query = makeQueryKeywordSearch(requestBody.result);
-
+                    console.log("QUERY == > " + query);
                     var url = baseurl + query;
+                    console.log("URL == > " + url);
                     var auth = new Buffer(API_KEY + ':' + 'X').toString('base64');
                     request({
                         url: url,
