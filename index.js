@@ -109,6 +109,8 @@ restService.post('/hook', function (req, res) {
                             console.log("======== DEBUG ========");
                             console.log("obj.response[\"search\"].result : " +  obj.response["search"].result);
                             console.log("-------------------------------");
+                            console.log("JSON.stringify(obj.response[\"search\"].result) : " + JSON.stringify(obj.response["search"].result));
+                            console.log("-------------------------------");
                             console.log("obj.response[\"search\"].result.verses : " + obj.response["search"].result.verses);
                             console.log("-------------------------------");
                             console.log("obj.response[\"search\"].result[0] : " + obj.response["search"].result[0]);
