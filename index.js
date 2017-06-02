@@ -122,10 +122,10 @@ function makeQuery(result) {
     
     var end_verse = parameters[END_VERSE_ARGUMENT];
     if (!end_verse){
-        end_verse = "-ff"
+        end_verse = "ff"
     }
 
-    return book + "+" + chapter + ":" + start_verse + end_verse + "&version=eng-GNTD"
+    return book + "+" + chapter + ":" + start_verse + "-" + end_verse + "&version=eng-GNTD"
 }
     
 
