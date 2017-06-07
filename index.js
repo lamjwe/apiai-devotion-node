@@ -112,8 +112,18 @@ app.post('/', function(req, res, next) {
 
             var strippedText = striptags(text);
             console.log(strippedText);
-
-            assistant.tell('Here is the passage:  ' + strippedText);
+            if (assistant.hasSurfaceCapability(assistant.SurfaceCapabilities.SCREEN_OUTPUT)) {
+                assistant.ask(assistant.buildRichResponse()
+                    // Create a basic card and add it to the rich response
+                    .addSimpleResponse('Testing Simple Response')
+                    .addBasicCard(assistant.buildBasicCard(strippedText)
+                        .setTitle('Test Title')
+                        .addButton('Read more')
+                    )
+                );
+            } else {
+                assistant.tell('Here is the passage:  ' + strippedText);
+            }
         }
     });
   }
