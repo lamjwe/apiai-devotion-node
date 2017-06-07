@@ -121,8 +121,7 @@ app.post('/', function(req, res, next) {
   // Add handler functions to the action router.
   let actionRouter = new Map();
   
-  // The ASK_WEATHER_INTENT (askWeather) should map to the getWeather method.
-  actionRouter.set(GET_PASSAGE, getWeather);
+  actionRouter.set(GET_PASSAGE, getPassage);
   
   // Route requests to the proper handler functions via the action router.
   assistant.handleRequest(actionRouter);
