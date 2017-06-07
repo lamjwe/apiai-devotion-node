@@ -107,7 +107,7 @@ app.post('/', function(req, res, next) {
         } else {        
             console.log("SUCCESS: ");
             let obj = JSON.parse(response.body);
-            logObject('API call response ==> ', body);
+            logObject('API call response ==> ', obj);
             var text = obj.response["search"].result.passages[0]["text"];
 
             var strippedText = striptags(text);
