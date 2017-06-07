@@ -1,204 +1,146 @@
-'use strict';
-
+// init project
 const express = require('express');
+const ApiAiAssistant = require('actions-on-google').ApiAiAssistant;
 const bodyParser = require('body-parser');
 const request = require('request');
+const app = express();
+const Map = require('es6-map');
 const striptags = require('striptags');
 
-const restService = express();
-restService.use(bodyParser.json());
+// Pretty JSON output for logs
+const prettyjson = require('prettyjson');
 
-const GET_PASSAGE = 'get_passage';
-const SEARCH_KEYWORD = 'search_keyword';
-const BOOK_ARGUMENT = 'Book';
-const CHAPTER_ARGUMENT = 'Chapter';
-const START_VERSE_ARGUMENT = 'StartVerse';
-const END_VERSE_ARGUMENT = 'EndVerse';
-const KEYWORD_ARGUMENT = 'Keyword';
-const API_KEY = 'c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN';
+app.use(bodyParser.json({type: 'application/json'}));
 
-restService.post('/hook', function (req, res) {
+// This boilerplate uses Express, but feel free to use whatever libs or frameworks
+// you'd like through `package.json`.
 
-    console.log('hook request');
+// http://expressjs.com/en/starter/static-files.html
+app.use(express.static('public'));
 
-    try {
-        var speech = 'empty speech';
+// Uncomment the below function to check the authenticity of the API.AI requests.
+// See https://docs.api.ai/docs/webhook#section-authentication
+/*app.post('/', function(req, res, next) {
+  // Instantiate a new API.AI assistant object.
+  const assistant = new ApiAiAssistant({request: req, response: res});
+  
+  // Throw an error if the request is not valid.
+  if(assistant.isRequestFromApiAi(process.env.API_AI_SECRET_HEADER_KEY, 
+                                  process.env.API_AI_SECRET_HEADER_VALUE)) {
+    next();
+  } else {
+    console.log('Request failed validation - req.headers:', JSON.stringify(req.headers, null, 2));
+    
+    res.status(400).send('Invalid request');
+  }
+});*/
 
-        if (req.body) {
-            var requestBody = req.body;
+// Handle webhook requests
+app.post('/', function(req, res, next) {
+  // Log the request headers and body, to aide in debugging. You'll be able to view the
+  // webhook requests coming from API.AI by clicking the Logs button the sidebar.
+  logObject('Request headers: ', req.headers);
+  logObject('Request body: ', req.body);
+    
+  // Instantiate a new API.AI assistant object.
+  const assistant = new ApiAiAssistant({request: req, response: res});
 
-            // console.log("RequestBody: " + JSON.stringify(requestBody));
-            if (requestBody.result) {
-                speech = '';
+  // Declare constants for your action and parameter names
+    const GET_PASSAGE = 'get_passage';
+    const SEARCH_KEYWORD = 'search_keyword';
+    const BOOK_ARGUMENT = 'Book';
+    const CHAPTER_ARGUMENT = 'Chapter';
+    const START_VERSE_ARGUMENT = 'StartVerse';
+    const END_VERSE_ARGUMENT = 'EndVerse';
+    const KEYWORD_ARGUMENT = 'Keyword';
+    const API_KEY = 'c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN';
 
-                if (requestBody.result.fulfillment) {
-                    speech += requestBody.result.fulfillment.speech;
-                    speech += ' ';
-                }
+    const ASK_WEATHER_ACTION = 'askWeather';  // The action name from the API.AI intent
+    const CITY_PARAMETER = 'geo-city'; // An API.ai parameter name
 
-                if (requestBody.result.action == GET_PASSAGE) {
-                    var baseurl = "https://bibles.org/v2/passages.js?q[]=";
-                    var query = makeQueryGetPassage(requestBody.result);
-
-                    var url = baseurl + query;
-                    var auth = new Buffer(API_KEY + ':' + 'X').toString('base64');
-                    request({
-                        url: url,
-                        headers: {
-                            'Authorization': 'Basic ' + auth
-                        },
-                        method: 'GET'
-                    }, function (error, response, body) {
-                        if (error) {
-                            console.log('Error sending message: ', error);
-                        } else if (response.body.error) {
-                            console.log('Error: ', response.body.error);
-                        }
-
-                        console.log("SUCCESS: ");
-                        console.log("+++++++++++++++++++++++++++");
-                        var obj = JSON.parse(body);
-                        var text;
-                        try {
-                            text = obj.response["search"].result.passages[0]["text"];
-                            console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                            var strippedText = striptags(text);
-                            console.log("STRIPPED TEXT: " + strippedText);
-
-                            return res.json({
-                                speech: "Here is the passage you searched for.",
-                                displayText: strippedText,
-                                source: 'apiai-devotion'
-                            });
-                        } catch (err) {
-                            console.error("ERROR == > ", err);
-                            return res.json({
-                                speech: "Sorry, cannot not find the given passage.",
-                                displayText: "Sorry, cannot not find the given passage.",
-                                source: 'apiai-devotion'
-                            });
-                        }
-                    });
-                } else if (requestBody.result.action == SEARCH_KEYWORD) {
-                    var baseurl = "https://bibles.org/v2/search.js?query=";
-                    var query = makeQueryKeywordSearch(requestBody.result);
-                    console.log("QUERY == > " + query);
-                    var url = baseurl + query + "&version=eng-KJVA";
-                    console.log("URL == > " + url);
-                    var auth = new Buffer(API_KEY + ':' + 'X').toString('base64');
-                    request({
-                        url: url,
-                        headers: {
-                            'Authorization': 'Basic ' + auth
-                        },
-                        method: 'GET'
-                    }, function (error, response, body) {
-                        if (error) {
-                            console.log('Error sending message: ', error);
-                        } else if (response.body.error) {
-                            console.log('Error: ', response.body.error);
-                        }
-
-                        console.log("SUCCESS GETTING RESULTS FROM KEYWORD SEARCH: ");
-                        console.log("+++++++++++++++++++++++++++");
-                        var obj = JSON.parse(body);
-                        var text;
-                        try {
-                            var resultVerses = obj.response["search"].result.verses;
-                            var resultToDisplay = "";
-
-                            console.log("======== DEBUG ========");
-                            // console.log("obj.response[\"search\"].result : " +  obj.response["search"].result);
-                            // console.log("-------------------------------");
-                            // console.log("JSON.stringify(obj.response[\"search\"].result) : " + JSON.stringify(obj.response["search"].result));
-                            // console.log("-------------------------------");
-                            // console.log("obj.response[\"search\"].result.verses : " + obj.response["search"].result.verses);
-                            // console.log("-------------------------------");
-                            
-                            resultVerses.forEach(function(verse) {
-                                // console.log("verse ==> " + verse);
-                                // console.log("verse.reference ==> " + verse.reference);
-                                // console.log("verse.text ==> " + verse.text);
-                                
-                                text = verse.text;
-                                
-                                var strippedText = striptags(text);
-                                // console.log("STRIPPED TEXT: " + strippedText);
-
-                                resultToDisplay += verse.reference + " \n\n" + strippedText + "\n\n";
-                            });
-
-                            console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                            console.log("resultToDisplay ===> " + resultToDisplay);
-                            return res.json({
-                                speech: "Here are the results of your search: ",
-                                displayText: resultToDisplay,
-                                source: 'apiai-devotion'
-                            });
-                        } catch (err) {
-                            console.error("ERROR == > ", err);
-                            return res.json({
-                                speech: "Sorry, cannot not find the given passage.",
-                                displayText: "Sorry, cannot not find the given passage.",
-                                source: 'apiai-devotion'
-                            });
-                        }
-                    });
-                }
-            }
+    function makeQueryGetPassage(app) {
+        var book = app.getArgument(BOOK_ARGUMENT);
+        if (!book) {
+            return None;
         }
 
-        console.log('result: ', speech);
+        var chapter = app.getArgument(CHAPTER_ARGUMENT);
+        if (!chapter) {
+            return None;
+        }
 
-        return null;
-    } catch (err) {
-        console.error("Can't process request", err);
+        var start_verse = app.getArgument(START_VERSE_ARGUMENT);
+        if (!start_verse) {
+            start_verse = "1"
+        } 
+        
+        var end_verse = app.getArgument(END_VERSE_ARGUMENT);
+        if (!end_verse){
+            end_verse = "ff"
+        }
 
-        return res.status(400).json({
-            status: {
-                code: 400,
-                errorType: err.message
-            }
-        });
+        return book + "+" + chapter + ":" + start_verse + "-" + end_verse + "&version=eng-KJVA"
     }
+
+  // Create functions to handle intents here
+  function getPassage(assistant) {
+    console.log('Handling action: ' + GET_PASSAGE);
+
+    var baseurl = "https://bibles.org/v2/passages.js?q[]=";
+    // app.tell('Here is the passage you are looking for : ');
+    var query = makeQueryGetPassage(app);
+
+    var url = baseurl + query;
+    console.log("URL : " + url);
+
+    var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
+    request({
+        url: url,
+        headers: {
+            'Authorization': 'Basic ' + auth
+        },
+        method: 'GET'
+    }, function (error, response) {
+        if(error) {
+            console.log('Error sending message: ', error);
+            next(error);
+        } else {        
+            console.log("SUCCESS: ");
+            let obj = JSON.parse(response.body);
+            logObject('API call response ==> ', body);
+            var text = obj.response["search"].result.passages[0]["text"];
+
+            var strippedText = striptags(text);
+            console.log(strippedText);
+
+            assistant.tell('Here is the passage:  ' + strippedText);
+        }
+    });
+  }
+  
+  // Add handler functions to the action router.
+  let actionRouter = new Map();
+  
+  // The ASK_WEATHER_INTENT (askWeather) should map to the getWeather method.
+  actionRouter.set(GET_PASSAGE, getWeather);
+  
+  // Route requests to the proper handler functions via the action router.
+  assistant.handleRequest(actionRouter);
 });
 
-function makeQueryGetPassage(result) {
-    var parameters = result.parameters;
-    var book = parameters[BOOK_ARGUMENT];
-    if (!book) {
-        return None;
-    }
+// Handle errors.
+app.use(function (err, req, res, next) {
+  console.error(err.stack)
+  res.status(500).send('Something broke!')
+})
 
-    var chapter = parameters[CHAPTER_ARGUMENT];
-    if (!chapter) {
-        return None;
-    }
-
-    var start_verse = parameters[START_VERSE_ARGUMENT];
-    if (!start_verse) {
-        start_verse = "1"
-    } 
-    
-    var end_verse = parameters[END_VERSE_ARGUMENT];
-    if (!end_verse){
-        end_verse = "ff"
-    }
-
-    return book + "+" + chapter + ":" + start_verse + "-" + end_verse + "&version=eng-KJVA"
+// Pretty print objects for logging.
+function logObject(message, object, options) {
+  console.log(message);
+  console.log(prettyjson.render(object, options));
 }
 
-function makeQueryKeywordSearch(result) {
-    var parameters = result.parameters;
-    var keyword = parameters[KEYWORD_ARGUMENT];
-    if (!keyword) {
-        return None;
-    }
-
-    return keyword;
-}
-    
-
-restService.listen((process.env.PORT || 5000), function () {
-    console.log("Server listening");
+// Listen for requests.
+let server = app.listen(process.env.PORT, function () {
+  console.log('Your app is listening on port ' + server.address().port);
 });
