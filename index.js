@@ -70,16 +70,29 @@ app.post('/', function(req, res, next) {
         }
 
         var start_verse = app.getArgument(START_VERSE_ARGUMENT);
-        if (!start_verse) {
-            start_verse = "1"
-        } 
-        
+         
         var end_verse = app.getArgument(END_VERSE_ARGUMENT);
         if (!end_verse){
-            end_verse = "ff"
+            if (!start_verse) {
+                end_verse = "-ff";
+            } else {
+                end_verse = "";
+            }
+        } else {
+            end_verse = "-" + end_verse;
         }
 
-        return book + "+" + chapter + ":" + start_verse + "-" + end_verse + "&version=eng-KJVA"
+        if (!start_verse) {
+            start_verse = "1"
+        }
+
+        return {
+            passage: book + "+" + chapter + ":" + start_verse + "-" + end_verse + "&version=eng-KJVA",
+            book: book,
+            chapter: chapter,
+            start_verse: start_verse,
+            end_verse: end_verse
+        }
     }
 
   // Create functions to handle intents here
@@ -90,7 +103,7 @@ app.post('/', function(req, res, next) {
     // app.tell('Here is the passage you are looking for : ');
     var query = makeQueryGetPassage(assistant);
 
-    var url = baseurl + query;
+    var url = baseurl + query.passage;
     console.log("URL : " + url);
 
     var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
@@ -111,13 +124,14 @@ app.post('/', function(req, res, next) {
             var text = obj.response["search"].result.passages[0]["text"];
 
             var strippedText = striptags(text);
+            
             console.log(strippedText);
             if (assistant.hasSurfaceCapability(assistant.SurfaceCapabilities.SCREEN_OUTPUT)) {
                 assistant.ask(assistant.buildRichResponse()
                     // Create a basic card and add it to the rich response
-                    .addSimpleResponse('Testing Simple Response')
+                    .addSimpleResponse('Here is the passage you are looking for')
                     .addBasicCard(assistant.buildBasicCard(strippedText)
-                        .setTitle('Test Title')
+                        .setTitle(query.book + "Chapter " + query.chapter + " " + query.start_verse + query.end_verse)
                         .addButton('Read more')
                     )
                 );
