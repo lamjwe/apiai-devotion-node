@@ -120,7 +120,7 @@ app.post('/', function(req, res, next) {
         } else {        
             console.log("SUCCESS: ");
             let obj = JSON.parse(response.body);
-            logObject('API call response ==> ', obj);
+            // logObject('API call response ==> ', obj);
             var text = obj.response["search"].result.passages[0]["text"];
 
             var strippedText = striptags(text);
@@ -158,10 +158,10 @@ app.use(function (err, req, res, next) {
 })
 
 // Pretty print objects for logging.
-function logObject(message, object, options) {
-  console.log(message);
-  console.log(prettyjson.render(object, options));
-}
+// function logObject(message, object, options) {
+//   console.log(message);
+//   console.log(prettyjson.render(object, options));
+// }
 
 // Listen for requests.
 let server = app.listen(process.env.PORT, function () {
