@@ -88,7 +88,7 @@ app.post('/', function(req, res, next) {
 
     var baseurl = "https://bibles.org/v2/passages.js?q[]=";
     // app.tell('Here is the passage you are looking for : ');
-    var query = makeQueryGetPassage(app);
+    var query = makeQueryGetPassage(assistant);
 
     var url = baseurl + query;
     console.log("URL : " + url);
@@ -120,7 +120,7 @@ app.post('/', function(req, res, next) {
   
   // Add handler functions to the action router.
   let actionRouter = new Map();
-  
+
   actionRouter.set(GET_PASSAGE, getPassage);
   
   // Route requests to the proper handler functions via the action router.
