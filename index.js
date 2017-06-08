@@ -238,6 +238,7 @@ app.post('/', function(req, res, next) {
 
     actionRouter.set(GET_PASSAGE, getPassage);
     actionRouter.set(SEARCH_KEYWORD, keywordSearch);
+    actionRouter.set(assistant.StandardIntents.OPTION, itemSelected);
 
     // Route requests to the proper handler functions via the action router.
     assistant.handleRequest(actionRouter);
