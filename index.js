@@ -87,7 +87,7 @@ app.post('/', function(req, res, next) {
         }
 
         return {
-            passage: book + "+" + chapter + ":" + start_verse + "-" + end_verse + "&version=eng-KJVA",
+            passage: book + "+" + chapter + ":" + start_verse + end_verse + "&version=eng-KJVA",
             book: book,
             chapter: chapter,
             start_verse: start_verse,
@@ -131,7 +131,7 @@ app.post('/', function(req, res, next) {
                     // Create a basic card and add it to the rich response
                     .addSimpleResponse('Here is the passage you are looking for')
                     .addBasicCard(assistant.buildBasicCard(strippedText)
-                        .setTitle(query.book + "Chapter " + query.chapter + " " + query.start_verse + query.end_verse)
+                        .setTitle(query.book + " Chapter " + query.chapter + ":" + query.start_verse + query.end_verse)
                         .addButton('Read more')
                     )
                 );
