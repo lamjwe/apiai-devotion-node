@@ -229,7 +229,7 @@ app.post('/', function(req, res, next) {
 
         var baseurl = "https://bibles.org/v2/passages.js?q[]=";
         // app.tell('Here is the passage you are looking for : ');
-        var replaced = test.split(' ').join('+');
+        var replaced = param.split(' ').join('+');
         var url = baseurl + replaced + "&version=eng-KJVA";
         console.log("URL : " + url);
 
