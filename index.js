@@ -142,19 +142,17 @@ app.post('/', function(req, res, next) {
         });
     }
 
-    function makeQueryKeywordSearch(result) {
-        var parameters = result.parameters;
-        var keyword = parameters[KEYWORD_ARGUMENT];
+    function makeQueryKeywordSearch(app) {
+        var keyword = app.getArgument(KEYWORD_ARGUMENT);
         if (!keyword) {
             return None;
         }
-
         return keyword;
     }
 
-    function keywordSearch(app) {
+    function keywordSearch(assistant) {
         var baseurl = "https://bibles.org/v2/search.js?query=";
-        var query = makeQueryKeywordSearch(requestBody.result);
+        var query = makeQueryKeywordSearch(assistant);
         var url = baseurl + query + "&version=eng-KJVA";
         var auth = new Buffer(API_KEY + ':' + 'X').toString('base64');
         request({
@@ -179,7 +177,7 @@ app.post('/', function(req, res, next) {
                     console.log("======== DEBUG ========");
 
                     // Build a list
-                    var list = app.buildList('Here are some search results for ' + query);
+                    var list = assistant.buildList('Here are some search results for ' + query);
                     
                     resultVerses.forEach(function(verse) {
                         
@@ -190,14 +188,14 @@ app.post('/', function(req, res, next) {
                         // resultToDisplay += verse.reference + " \n\n" + strippedText + "\n\n";
 
                         // Add the item to the list
-                        list.addItems(app.buildOptionItem('MATH_AND_PRIME',
+                        list.addItems(assistant.buildOptionItem('MATH_AND_PRIME',
                         ['math', 'math and prime', 'prime numbers', 'prime'])
                         .setTitle(verse.reference)
                         .setDescription(strippedText));
                         
                     });
 
-                    app.askWithList(app.buildRichResponse()
+                    assistant.askWithList(assistant.buildRichResponse()
                         .addSimpleResponse('Alright, here are your search results for ' + query)
                         .addSuggestions(['Basic Card', 'List', 'Carousel', 'Suggestions']),list
                     );
