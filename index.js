@@ -107,6 +107,10 @@ app.post('/', function(req, res, next) {
         var url = baseurl + query.passage;
         console.log("URL : " + url);
 
+        getPassageAndVerses(url, query.book + " Chapter " + query.chapter + ":" + query.start_verse + query.end_verse);
+    }
+
+    function getPassageAndVerses(url, query) {
         var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
         request({
             url: url,
@@ -132,7 +136,7 @@ app.post('/', function(req, res, next) {
                         // Create a basic card and add it to the rich response
                         .addSimpleResponse('Here is the passage you are looking for')
                         .addBasicCard(assistant.buildBasicCard(strippedText)
-                            .setTitle(query.book + " Chapter " + query.chapter + ":" + query.start_verse + query.end_verse)
+                            .setTitle(query)
                             .addButton('Read more')
                         )
                     );
@@ -199,7 +203,7 @@ app.post('/', function(req, res, next) {
                     });
 
                     assistant.askWithList(assistant.buildRichResponse()
-                        .addSimpleResponse('Here is the results: ')
+                        .addSimpleResponse('Here are the results: ')
                         .addSuggestions(
                         ['Basic Card', 'List', 'Carousel', 'Suggestions']),list
                     );
@@ -223,50 +227,16 @@ app.post('/', function(req, res, next) {
         // Compare the user's selections to each of the item's keys
         if (!param) {
             app.ask('You did not select any item from the list or carousel');
-        } 
-    
-        console.log('Handling action: ' + SELECTED_PASSAGE);
+        } else {
+            console.log('Handling action: ' + SELECTED_PASSAGE);
 
-        var baseurl = "https://bibles.org/v2/passages.js?q[]=";
-        // app.tell('Here is the passage you are looking for : ');
-        var replaced = param.split(' ').join('+');
-        var url = baseurl + replaced + "&version=eng-KJVA";
-        console.log("URL : " + url);
+            var baseurl = "https://bibles.org/v2/passages.js?q[]=";
+            var replaced = param.split(' ').join('+');
+            var url = baseurl + replaced + "&version=eng-KJVA";
+            console.log("URL : " + url);
 
-        var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
-        request({
-            url: url,
-            headers: {
-                'Authorization': 'Basic ' + auth
-            },
-            method: 'GET'
-        }, function (error, response) {
-            if(error) {
-                console.log('Error sending message: ', error);
-                next(error);
-            } else {        
-                console.log("SUCCESS: ");
-                let obj = JSON.parse(response.body);
-                // logObject('API call response ==> ', obj);
-                var text = obj.response["search"].result.passages[0]["text"];
-
-                var strippedText = striptags(text);
-                
-                console.log(strippedText);
-                if (assistant.hasSurfaceCapability(assistant.SurfaceCapabilities.SCREEN_OUTPUT)) {
-                    assistant.ask(assistant.buildRichResponse()
-                        // Create a basic card and add it to the rich response
-                        .addSimpleResponse('Here is the passage you are looking for')
-                        .addBasicCard(assistant.buildBasicCard(strippedText)
-                            .setTitle(param)
-                            .addButton('Read more')
-                        )
-                    );
-                } else {
-                    assistant.tell('Here is the passage:  ' + strippedText);
-                }
-            }
-        });
+            getPassageAndVerses(url, param);
+        }
     }
 
     // Add handler functions to the action router.
