@@ -155,20 +155,21 @@ app.post('/', function(req, res, next) {
         var query = makeQueryKeywordSearch(assistant);
         var url = baseurl + query + "&version=eng-KJVA";
         var auth = new Buffer(API_KEY + ':' + 'X').toString('base64');
+        console.log("URL: " + url);
         request({
             url: url,
             headers: {
                 'Authorization': 'Basic ' + auth
             },
             method: 'GET'
-        }, function (error, response, body) {
+        }, function (error, response) {
             if(error) {
                 console.log('Error sending message: ', error);
                 next(error);
             } else {
                 console.log("SUCCESS GETTING RESULTS FROM KEYWORD SEARCH: ");
                 console.log("+++++++++++++++++++++++++++");
-                var obj = JSON.parse(body);
+                var obj = JSON.parse(response.body);
                 var text;
                 try {
                     var resultVerses = obj.response["search"].result.verses;
@@ -184,7 +185,7 @@ app.post('/', function(req, res, next) {
                         text = verse.text;
                         
                         var strippedText = striptags(text);
-                        // console.log("STRIPPED TEXT: " + strippedText);
+                        console.log("STRIPPED TEXT: " + strippedText);
                         // resultToDisplay += verse.reference + " \n\n" + strippedText + "\n\n";
 
                         // Add the item to the list
