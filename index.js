@@ -190,7 +190,7 @@ app.post('/', function(req, res, next) {
                         // resultToDisplay += verse.reference + " \n\n" + strippedText + "\n\n";
 
                         // Add the item to the list
-                        list.addItems(assistant.buildOptionItem('MATH_AND_PRIME',
+                        list.addItems(assistant.buildOptionItem(verse.reference,
                         ['math', 'math and prime', 'prime numbers', 'prime'])
                         .setTitle(verse.reference)
                         .setDescription(strippedText));
