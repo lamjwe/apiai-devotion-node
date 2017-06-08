@@ -215,26 +215,26 @@ app.post('/', function(req, res, next) {
 
     }
 
-    function itemSelected (app) {
-        // Get the user's selection
-        const param = app.getContextArgument('actions_intent_option',
-            'OPTION').value;
+    // function itemSelected (app) {
+    //     // Get the user's selection
+    //     const param = app.getContextArgument('actions_intent_option',
+    //         'OPTION').value;
 
-        console.log(" PARAM : " + param);
+    //     console.log(" PARAM : " + param);
 
-        // // Compare the user's selections to each of the item's keys
-        // if (!param) {
-        //     app.ask('You did not select any item from the list');
-        // } else if (param === 'MATH_AND_PRIME') {
-        //     app.ask('42 is an abundant number because the sum of its…');
-        // } else if (param === 'EGYPT') {
-        //     app.ask('42 gods who ruled on the fate of the dead in the ');
-        // } else if (param === 'RECIPES') {
-        //     app.ask('Here\'s a beautifully simple recipe that\'s full ');
-        // } else {
-        //     app.ask('You selected an unknown item from the list or carousel');
-        // }
-    }
+    //     // // Compare the user's selections to each of the item's keys
+    //     // if (!param) {
+    //     //     app.ask('You did not select any item from the list');
+    //     // } else if (param === 'MATH_AND_PRIME') {
+    //     //     app.ask('42 is an abundant number because the sum of its…');
+    //     // } else if (param === 'EGYPT') {
+    //     //     app.ask('42 gods who ruled on the fate of the dead in the ');
+    //     // } else if (param === 'RECIPES') {
+    //     //     app.ask('Here\'s a beautifully simple recipe that\'s full ');
+    //     // } else {
+    //     //     app.ask('You selected an unknown item from the list or carousel');
+    //     // }
+    // }
 
     // Add handler functions to the action router.
     let actionRouter = new Map();
