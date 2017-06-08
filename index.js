@@ -48,6 +48,7 @@ app.post('/', function(req, res, next) {
   // Declare constants for your action and parameter names
     const GET_PASSAGE = 'get_passage';
     const SEARCH_KEYWORD = 'search_keyword';
+    const SELECTED_PASSAGE = 'select_passage';
     const BOOK_ARGUMENT = 'Book';
     const CHAPTER_ARGUMENT = 'Chapter';
     const START_VERSE_ARGUMENT = 'StartVerse';
@@ -238,7 +239,8 @@ app.post('/', function(req, res, next) {
 
     actionRouter.set(GET_PASSAGE, getPassage);
     actionRouter.set(SEARCH_KEYWORD, keywordSearch);
-    actionRouter.set(assistant.StandardIntents.OPTION, itemSelected);
+    // actionRouter.set(assistant.StandardIntents.OPTION, itemSelected);
+    actionRouter.set(SELECTED_PASSAGE, itemSelected);
 
     // Route requests to the proper handler functions via the action router.
     assistant.handleRequest(actionRouter);
