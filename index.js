@@ -258,7 +258,7 @@ app.post('/', function(req, res, next) {
                         // Create a basic card and add it to the rich response
                         .addSimpleResponse('Here is the passage you are looking for')
                         .addBasicCard(assistant.buildBasicCard(strippedText)
-                            .setTitle(query.book + " Chapter " + query.chapter + ":" + query.start_verse + query.end_verse)
+                            .setTitle(param)
                             .addButton('Read more')
                         )
                     );
