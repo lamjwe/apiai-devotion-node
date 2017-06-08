@@ -200,13 +200,7 @@ app.post('/', function(req, res, next) {
                     //     .addSimpleResponse('Alright, here are your search results for ' + query)
                     //     .addSuggestions(['Basic Card', 'List', 'Carousel', 'Suggestions']),list
                     // );
-
-                    assistant.askWithList(assistant.buildRichResponse()
-                        .addSimpleResponse('Alright')
-                        .addSuggestions(
-                        ['Basic Card', 'List', 'Carousel', 'Suggestions']),
-                        // Build a list
-                        assistant.buildList('Things to learn about')
+                    var testList = assistant.buildList('Things to learn about')
                         // Add the first item to the list
                         .addItems(assistant.buildOptionItem('MATH_AND_PRIME',
                         ['math', 'math and prime', 'prime numbers', 'prime'])
@@ -229,7 +223,13 @@ app.post('/', function(req, res, next) {
                         .setDescription('Here\'s a beautifully simple recipe that\'s full ' +
                             'of flavor! All you need is some ginger and…')
                         .setImage('http://example.com/recipe', 'Recipe')
-                        )
+                        );
+
+                    assistant.askWithList(assistant.buildRichResponse()
+                        .addSimpleResponse('Here is the results: ')
+                        .addSuggestions(
+                        ['Basic Card', 'List', 'Carousel', 'Suggestions']),testList
+                        // Build a list
                     );
 
                     console.log("DONE");
