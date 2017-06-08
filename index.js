@@ -206,15 +206,13 @@ app.post('/', function(req, res, next) {
                         ['math', 'math and prime', 'prime numbers', 'prime'])
                         .setTitle('Math & prime numbers')
                         .setDescription('42 is an abundant number because the sum of its ' +
-                            'proper divisors 54 is greater…')
-                        .setImage('http://example.com/math_and_prime.jpg', 'Math & prime numbers'))
+                            'proper divisors 54 is greater…'))
                         // Add the second item to the list
                         .addItems(assistant.buildOptionItem('EGYPT',
                         ['religion', 'egpyt', 'ancient egyptian'])
                         .setTitle('Ancient Egyptian religion')
                         .setDescription('42 gods who ruled on the fate of the dead in the ' +
                             'afterworld. Throughout the under…')
-                        .setImage('http://example.com/egypt', 'Egypt')
                         )
                         // Add third item to the list
                         .addItems(assistant.buildOptionItem('RECIPES',
@@ -222,7 +220,6 @@ app.post('/', function(req, res, next) {
                         .setTitle('42 recipes with 42 ingredients')
                         .setDescription('Here\'s a beautifully simple recipe that\'s full ' +
                             'of flavor! All you need is some ginger and…')
-                        .setImage('http://example.com/recipe', 'Recipe')
                         );
 
                     assistant.askWithList(assistant.buildRichResponse()
