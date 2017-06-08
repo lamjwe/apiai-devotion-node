@@ -200,22 +200,24 @@ app.post('/', function(req, res, next) {
                     //     .addSimpleResponse('Alright, here are your search results for ' + query)
                     //     .addSuggestions(['Basic Card', 'List', 'Carousel', 'Suggestions']),list
                     // );
-                    var testList = assistant.buildList('Things to learn about')
+                    var testList = assistant.buildList('Things to learn about');
+
                         // Add the first item to the list
-                        .addItems(assistant.buildOptionItem('MATH_AND_PRIME',
+                    testList.addItems(assistant.buildOptionItem('MATH_AND_PRIME',
                         ['math', 'math and prime', 'prime numbers', 'prime'])
                         .setTitle('Math & prime numbers')
                         .setDescription('42 is an abundant number because the sum of its ' +
-                            'proper divisors 54 is greater…'))
+                            'proper divisors 54 is greater…'));
+
                         // Add the second item to the list
-                        .addItems(assistant.buildOptionItem('EGYPT',
+                    testList.addItems(assistant.buildOptionItem('EGYPT',
                         ['religion', 'egpyt', 'ancient egyptian'])
                         .setTitle('Ancient Egyptian religion')
                         .setDescription('42 gods who ruled on the fate of the dead in the ' +
                             'afterworld. Throughout the under…')
                         )
                         // Add third item to the list
-                        .addItems(assistant.buildOptionItem('RECIPES',
+                    testList.addItems(assistant.buildOptionItem('RECIPES',
                         ['recipes', 'recipe', '42 recipes'])
                         .setTitle('42 recipes with 42 ingredients')
                         .setDescription('Here\'s a beautifully simple recipe that\'s full ' +
