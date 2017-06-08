@@ -223,15 +223,50 @@ app.post('/', function(req, res, next) {
         // Compare the user's selections to each of the item's keys
         if (!param) {
             app.ask('You did not select any item from the list or carousel');
-        } else if (param === 'MATH_AND_PRIME') {
-            app.ask('42 is an abundant number because the sum of its…');
-        } else if (param === 'EGYPT') {
-            app.ask('42 gods who ruled on the fate of the dead in the ');
-        } else if (param === 'RECIPES') {
-            app.ask('Here\'s a beautifully simple recipe that\'s full ');
-        } else {
-            app.ask('You selected an unknown item from the list or carousel');
-        }
+        } 
+    
+        console.log('Handling action: ' + SELECTED_PASSAGE);
+
+        var baseurl = "https://bibles.org/v2/passages.js?q[]=";
+        // app.tell('Here is the passage you are looking for : ');
+        var replaced = test.split(' ').join('+');
+        var url = baseurl + replaced + "&version=eng-KJVA";
+        console.log("URL : " + url);
+
+        var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
+        request({
+            url: url,
+            headers: {
+                'Authorization': 'Basic ' + auth
+            },
+            method: 'GET'
+        }, function (error, response) {
+            if(error) {
+                console.log('Error sending message: ', error);
+                next(error);
+            } else {        
+                console.log("SUCCESS: ");
+                let obj = JSON.parse(response.body);
+                // logObject('API call response ==> ', obj);
+                var text = obj.response["search"].result.passages[0]["text"];
+
+                var strippedText = striptags(text);
+                
+                console.log(strippedText);
+                if (assistant.hasSurfaceCapability(assistant.SurfaceCapabilities.SCREEN_OUTPUT)) {
+                    assistant.ask(assistant.buildRichResponse()
+                        // Create a basic card and add it to the rich response
+                        .addSimpleResponse('Here is the passage you are looking for')
+                        .addBasicCard(assistant.buildBasicCard(strippedText)
+                            .setTitle(query.book + " Chapter " + query.chapter + ":" + query.start_verse + query.end_verse)
+                            .addButton('Read more')
+                        )
+                    );
+                } else {
+                    assistant.tell('Here is the passage:  ' + strippedText);
+                }
+            }
+        });
     }
 
     // Add handler functions to the action router.
