@@ -42,8 +42,8 @@ app.post('/', function(req, res, next) {
 //   logObject('Request headers: ', req.headers);
 //   logObject('Request body: ', req.body);
     
-  // Instantiate a new API.AI assistant object.
-  const assistant = new ApiAiAssistant({request: req, response: res});
+    // Instantiate a new API.AI assistant object.
+    const assistant = new ApiAiAssistant({request: req, response: res});
 
   // Declare constants for your action and parameter names
     const GET_PASSAGE = 'get_passage';
@@ -95,60 +95,129 @@ app.post('/', function(req, res, next) {
         }
     }
 
-  // Create functions to handle intents here
-  function getPassage(assistant) {
-    console.log('Handling action: ' + GET_PASSAGE);
+    // Create functions to handle intents here
+    function getPassage(assistant) {
+        console.log('Handling action: ' + GET_PASSAGE);
 
-    var baseurl = "https://bibles.org/v2/passages.js?q[]=";
-    // app.tell('Here is the passage you are looking for : ');
-    var query = makeQueryGetPassage(assistant);
+        var baseurl = "https://bibles.org/v2/passages.js?q[]=";
+        // app.tell('Here is the passage you are looking for : ');
+        var query = makeQueryGetPassage(assistant);
 
-    var url = baseurl + query.passage;
-    console.log("URL : " + url);
+        var url = baseurl + query.passage;
+        console.log("URL : " + url);
 
-    var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
-    request({
-        url: url,
-        headers: {
-            'Authorization': 'Basic ' + auth
-        },
-        method: 'GET'
-    }, function (error, response) {
-        if(error) {
-            console.log('Error sending message: ', error);
-            next(error);
-        } else {        
-            console.log("SUCCESS: ");
-            let obj = JSON.parse(response.body);
-            // logObject('API call response ==> ', obj);
-            var text = obj.response["search"].result.passages[0]["text"];
+        var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
+        request({
+            url: url,
+            headers: {
+                'Authorization': 'Basic ' + auth
+            },
+            method: 'GET'
+        }, function (error, response) {
+            if(error) {
+                console.log('Error sending message: ', error);
+                next(error);
+            } else {        
+                console.log("SUCCESS: ");
+                let obj = JSON.parse(response.body);
+                // logObject('API call response ==> ', obj);
+                var text = obj.response["search"].result.passages[0]["text"];
 
-            var strippedText = striptags(text);
-            
-            console.log(strippedText);
-            if (assistant.hasSurfaceCapability(assistant.SurfaceCapabilities.SCREEN_OUTPUT)) {
-                assistant.ask(assistant.buildRichResponse()
-                    // Create a basic card and add it to the rich response
-                    .addSimpleResponse('Here is the passage you are looking for')
-                    .addBasicCard(assistant.buildBasicCard(strippedText)
-                        .setTitle(query.book + " Chapter " + query.chapter + ":" + query.start_verse + query.end_verse)
-                        .addButton('Read more')
-                    )
-                );
-            } else {
-                assistant.tell('Here is the passage:  ' + strippedText);
+                var strippedText = striptags(text);
+                
+                console.log(strippedText);
+                if (assistant.hasSurfaceCapability(assistant.SurfaceCapabilities.SCREEN_OUTPUT)) {
+                    assistant.ask(assistant.buildRichResponse()
+                        // Create a basic card and add it to the rich response
+                        .addSimpleResponse('Here is the passage you are looking for')
+                        .addBasicCard(assistant.buildBasicCard(strippedText)
+                            .setTitle(query.book + " Chapter " + query.chapter + ":" + query.start_verse + query.end_verse)
+                            .addButton('Read more')
+                        )
+                    );
+                } else {
+                    assistant.tell('Here is the passage:  ' + strippedText);
+                }
             }
-        }
-    });
-  }
-  
-  // Add handler functions to the action router.
-  let actionRouter = new Map();
+        });
+    }
 
-  actionRouter.set(GET_PASSAGE, getPassage);
-  
-  // Route requests to the proper handler functions via the action router.
-  assistant.handleRequest(actionRouter);
+    function makeQueryKeywordSearch(result) {
+        var parameters = result.parameters;
+        var keyword = parameters[KEYWORD_ARGUMENT];
+        if (!keyword) {
+            return None;
+        }
+
+        return keyword;
+    }
+
+    function keywordSearch(app) {
+        var baseurl = "https://bibles.org/v2/search.js?query=";
+        var query = makeQueryKeywordSearch(requestBody.result);
+        var url = baseurl + query + "&version=eng-KJVA";
+        var auth = new Buffer(API_KEY + ':' + 'X').toString('base64');
+        request({
+            url: url,
+            headers: {
+                'Authorization': 'Basic ' + auth
+            },
+            method: 'GET'
+        }, function (error, response, body) {
+            if(error) {
+                console.log('Error sending message: ', error);
+                next(error);
+            } else {
+                console.log("SUCCESS GETTING RESULTS FROM KEYWORD SEARCH: ");
+                console.log("+++++++++++++++++++++++++++");
+                var obj = JSON.parse(body);
+                var text;
+                try {
+                    var resultVerses = obj.response["search"].result.verses;
+                    var resultToDisplay = "";
+
+                    console.log("======== DEBUG ========");
+
+                    // Build a list
+                    var list = app.buildList('Here are some search results for ' + query);
+                    
+                    resultVerses.forEach(function(verse) {
+                        
+                        text = verse.text;
+                        
+                        var strippedText = striptags(text);
+                        // console.log("STRIPPED TEXT: " + strippedText);
+                        // resultToDisplay += verse.reference + " \n\n" + strippedText + "\n\n";
+
+                        // Add the item to the list
+                        list.addItems(app.buildOptionItem('MATH_AND_PRIME',
+                        ['math', 'math and prime', 'prime numbers', 'prime'])
+                        .setTitle(verse.reference)
+                        .setDescription(strippedText));
+                        
+                    });
+
+                    app.askWithList(app.buildRichResponse()
+                        .addSimpleResponse('Alright, here are your search results for ' + query)
+                        .addSuggestions(['Basic Card', 'List', 'Carousel', 'Suggestions']),list
+                    );
+                } catch (err) {
+                    console.error("ERROR == > ", err);
+                    assistant.tell('Sorry, cannot not find the given passage.');
+                }
+            }
+        });
+
+    }
+
+    // Add handler functions to the action router.
+    let actionRouter = new Map();
+
+    actionRouter.set(GET_PASSAGE, getPassage);
+    actionRouter.set(SEARCH_KEYWORD, keywordSearch);
+
+    // Route requests to the proper handler functions via the action router.
+    assistant.handleRequest(actionRouter);
 });
 
 // Handle errors.
