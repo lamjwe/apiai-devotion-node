@@ -39,8 +39,8 @@ app.use(express.static('public'));
 app.post('/', function(req, res, next) {
   // Log the request headers and body, to aide in debugging. You'll be able to view the
   // webhook requests coming from API.AI by clicking the Logs button the sidebar.
-  logObject('Request headers: ', req.headers);
-  logObject('Request body: ', req.body);
+//   logObject('Request headers: ', req.headers);
+//   logObject('Request body: ', req.body);
     
   // Instantiate a new API.AI assistant object.
   const assistant = new ApiAiAssistant({request: req, response: res});
