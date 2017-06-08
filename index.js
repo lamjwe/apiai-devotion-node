@@ -185,7 +185,7 @@ app.post('/', function(req, res, next) {
                         text = verse.text;
                         
                         var strippedText = striptags(text);
-                        console.log("STRIPPED TEXT: " + strippedText);
+                        // console.log("STRIPPED TEXT: " + strippedText);
                         console.log("verse reference : " + verse.reference);
                         // resultToDisplay += verse.reference + " \n\n" + strippedText + "\n\n";
 
