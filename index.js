@@ -178,57 +178,57 @@ app.post('/', function(req, res, next) {
                     console.log("======== DEBUG ========");
 
                     // Build a list
-                    // var list = assistant.buildList('Here are some search results for ' + query);
+                    var list = assistant.buildList('Here are some search results for ' + query);
                     
-                    // resultVerses.forEach(function(verse) {
+                    resultVerses.forEach(function(verse) {
                         
-                    //     text = verse.text;
+                        text = verse.text;
                         
-                    //     var strippedText = striptags(text);
-                    //     console.log("STRIPPED TEXT: " + strippedText);
-                    //     // resultToDisplay += verse.reference + " \n\n" + strippedText + "\n\n";
+                        var strippedText = striptags(text);
+                        console.log("STRIPPED TEXT: " + strippedText);
+                        console.log("verse reference : " + verse.reference);
+                        // resultToDisplay += verse.reference + " \n\n" + strippedText + "\n\n";
 
-                    //     // Add the item to the list
-                    //     list.addItems(assistant.buildOptionItem('MATH_AND_PRIME',
-                    //     ['math', 'math and prime', 'prime numbers', 'prime'])
-                    //     .setTitle(verse.reference)
-                    //     .setDescription(strippedText));
+                        // Add the item to the list
+                        list.addItems(assistant.buildOptionItem('MATH_AND_PRIME',
+                        ['math', 'math and prime', 'prime numbers', 'prime'])
+                        .setTitle(verse.reference)
+                        .setDescription(strippedText));
                         
-                    // });
+                    });
 
                     // assistant.askWithList(assistant.buildRichResponse()
                     //     .addSimpleResponse('Alright, here are your search results for ' + query)
                     //     .addSuggestions(['Basic Card', 'List', 'Carousel', 'Suggestions']),list
                     // );
-                    var testList = assistant.buildList('Things to learn about');
+                    // var testList = assistant.buildList('Things to learn about');
 
-                        // Add the first item to the list
-                    testList.addItems(assistant.buildOptionItem('MATH_AND_PRIME',
-                        ['math', 'math and prime', 'prime numbers', 'prime'])
-                        .setTitle('Math & prime numbers')
-                        .setDescription('42 is an abundant number because the sum of its ' +
-                            'proper divisors 54 is greater…'));
+                    //     // Add the first item to the list
+                    // testList.addItems(assistant.buildOptionItem('MATH_AND_PRIME',
+                    //     ['math', 'math and prime', 'prime numbers', 'prime'])
+                    //     .setTitle('Math & prime numbers')
+                    //     .setDescription('42 is an abundant number because the sum of its ' +
+                    //         'proper divisors 54 is greater…'));
 
-                        // Add the second item to the list
-                    testList.addItems(assistant.buildOptionItem('EGYPT',
-                        ['religion', 'egpyt', 'ancient egyptian'])
-                        .setTitle('Ancient Egyptian religion')
-                        .setDescription('42 gods who ruled on the fate of the dead in the ' +
-                            'afterworld. Throughout the under…')
-                        )
-                        // Add third item to the list
-                    testList.addItems(assistant.buildOptionItem('RECIPES',
-                        ['recipes', 'recipe', '42 recipes'])
-                        .setTitle('42 recipes with 42 ingredients')
-                        .setDescription('Here\'s a beautifully simple recipe that\'s full ' +
-                            'of flavor! All you need is some ginger and…')
-                        );
+                    //     // Add the second item to the list
+                    // testList.addItems(assistant.buildOptionItem('EGYPT',
+                    //     ['religion', 'egpyt', 'ancient egyptian'])
+                    //     .setTitle('Ancient Egyptian religion')
+                    //     .setDescription('42 gods who ruled on the fate of the dead in the ' +
+                    //         'afterworld. Throughout the under…')
+                    //     )
+                    //     // Add third item to the list
+                    // testList.addItems(assistant.buildOptionItem('RECIPES',
+                    //     ['recipes', 'recipe', '42 recipes'])
+                    //     .setTitle('42 recipes with 42 ingredients')
+                    //     .setDescription('Here\'s a beautifully simple recipe that\'s full ' +
+                    //         'of flavor! All you need is some ginger and…')
+                    //     );
 
                     assistant.askWithList(assistant.buildRichResponse()
                         .addSimpleResponse('Here is the results: ')
                         .addSuggestions(
-                        ['Basic Card', 'List', 'Carousel', 'Suggestions']),testList
-                        // Build a list
+                        ['Basic Card', 'List', 'Carousel', 'Suggestions']),list
                     );
 
                     console.log("DONE");
