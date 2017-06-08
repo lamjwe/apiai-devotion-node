@@ -179,22 +179,21 @@ app.post('/', function(req, res, next) {
 
                     // Build a list
                     var list = assistant.buildList('Here are some search results for ' + query);
-                    var position = 0;
+                    
                     resultVerses.forEach(function(verse) {
                         
                         text = verse.text;
                         
                         var strippedText = striptags(text);
-                        // console.log("STRIPPED TEXT: " + strippedText);
+                        console.log("STRIPPED TEXT: " + strippedText);
                         console.log("verse reference : " + verse.reference);
                         // resultToDisplay += verse.reference + " \n\n" + strippedText + "\n\n";
 
                         // Add the item to the list
-                        list.addItems(assistant.buildOptionItem(position,[])
+                        list.addItems(assistant.buildOptionItem(verse.reference,
+                        ['math', 'math and prime', 'prime numbers', 'prime'])
                         .setTitle(verse.reference)
                         .setDescription(strippedText));
-
-                        position++;
                         
                     });
 
@@ -205,7 +204,6 @@ app.post('/', function(req, res, next) {
                     );
 
                     console.log("DONE");
-                    assistant.ask("What else can I do for you? ");
                 } catch (err) {
                     console.error("ERROR == > ", err);
                     assistant.tell('Sorry, cannot not find the given passage.');
@@ -214,27 +212,6 @@ app.post('/', function(req, res, next) {
         });
 
     }
-
-    // function itemSelected (app) {
-    //     // Get the user's selection
-    //     const param = app.getContextArgument('actions_intent_option',
-    //         'OPTION').value;
-
-    //     console.log(" PARAM : " + param);
-
-    //     // // Compare the user's selections to each of the item's keys
-    //     // if (!param) {
-    //     //     app.ask('You did not select any item from the list');
-    //     // } else if (param === 'MATH_AND_PRIME') {
-    //     //     app.ask('42 is an abundant number because the sum of its…');
-    //     // } else if (param === 'EGYPT') {
-    //     //     app.ask('42 gods who ruled on the fate of the dead in the ');
-    //     // } else if (param === 'RECIPES') {
-    //     //     app.ask('Here\'s a beautifully simple recipe that\'s full ');
-    //     // } else {
-    //     //     app.ask('You selected an unknown item from the list or carousel');
-    //     // }
-    // }
 
     // Add handler functions to the action router.
     let actionRouter = new Map();
