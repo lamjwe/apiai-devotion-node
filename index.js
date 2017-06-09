@@ -189,7 +189,7 @@ app.post('/', function(req, res, next) {
                             suggestionsList.push(suggestion["suggestion"]);
                         });
                     }
-                    console.log("obj.response[\"search\"]: " + JSON.stringify(obj.response["search"]));
+                    console.log("obj.response[\"search\"]: " + JSON.stringify(obj.response));
                     console.log("obj.response[\"search\"].result.spelling: " + obj.response["search"].result["spelling"]);
                     console.log("obj.response[\"search\"].result.spelling.entries: " + obj.response["search"].result.spelling.entries);
                     console.log("obj.response[\"search\"].result.spelling.entries.suggestions: " + obj.response["search"].result.spelling.entries.suggestions);
