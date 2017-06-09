@@ -234,10 +234,10 @@ app.post('/', function(req, res, next) {
                 var ref = title.split("Verse of the Day - ")[1].split(" (NLT)")[0];
 
                 var baseurl = "https://bibles.org/v2/passages.js?q[]=";
-                var replaced = param.split(' ').join('+');
+                var replaced = ref.split(' ').join('+');
                 var url = baseurl + replaced + "&version=eng-KJVA";
                 console.log("URL : " + url);
-                getPassageAndVerses(url, ref.split(' ').join('+'));
+                getPassageAndVerses(url, ref);
             }
         });
     }
