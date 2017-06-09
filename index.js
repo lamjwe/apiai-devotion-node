@@ -127,7 +127,6 @@ app.post('/', function(req, res, next) {
                 let obj = JSON.parse(response.body);
                 // logObject('API call response ==> ', obj);
                 var text = obj.response["search"].result.passages[0]["text"];
-                var copyRight = striptags(obj.response["search"].result.passages[0]["copyright"]);
                 var strippedText = striptags(text);
                 
                 console.log(strippedText);
@@ -140,7 +139,6 @@ app.post('/', function(req, res, next) {
                             .addButton('Read more')
                         )
                     );
-                    assistant.ask({displayText: copyRight});
                 } else {
                     assistant.tell('Here is the passage:  ' + strippedText);
                 }
