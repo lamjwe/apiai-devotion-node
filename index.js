@@ -12,43 +12,19 @@ const prettyjson = require('prettyjson');
 
 app.use(bodyParser.json({type: 'application/json'}));
 
-// This boilerplate uses Express, but feel free to use whatever libs or frameworks
-// you'd like through `package.json`.
-
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
 
-// Uncomment the below function to check the authenticity of the API.AI requests.
-// See https://docs.api.ai/docs/webhook#section-authentication
-/*app.post('/', function(req, res, next) {
-  // Instantiate a new API.AI assistant object.
-  const assistant = new ApiAiAssistant({request: req, response: res});
-  
-  // Throw an error if the request is not valid.
-  if(assistant.isRequestFromApiAi(process.env.API_AI_SECRET_HEADER_KEY, 
-                                  process.env.API_AI_SECRET_HEADER_VALUE)) {
-    next();
-  } else {
-    console.log('Request failed validation - req.headers:', JSON.stringify(req.headers, null, 2));
-    
-    res.status(400).send('Invalid request');
-  }
-});*/
-
 // Handle webhook requests
-app.post('/', function(req, res, next) {
-  // Log the request headers and body, to aide in debugging. You'll be able to view the
-  // webhook requests coming from API.AI by clicking the Logs button the sidebar.
-//   logObject('Request headers: ', req.headers);
-//   logObject('Request body: ', req.body);
-    
+app.post('/', function(req, res, next) {    
     // Instantiate a new API.AI assistant object.
     const assistant = new ApiAiAssistant({request: req, response: res});
 
-  // Declare constants for your action and parameter names
+    // Declare constants for your action and parameter names
     const GET_PASSAGE = 'get_passage';
     const SEARCH_KEYWORD = 'search_keyword';
     const SELECTED_PASSAGE = 'select_passage';
+    const GET_VOTD = 'retrieving_verse_of_day';
     const BOOK_ARGUMENT = 'Book';
     const CHAPTER_ARGUMENT = 'Chapter';
     const START_VERSE_ARGUMENT = 'StartVerse';
@@ -237,12 +213,49 @@ app.post('/', function(req, res, next) {
         }
     }
 
+    function getVOTD (assistant) {
+        // Get the user's selection
+        const baseURL = "https://bible.org/votd/";
+        
+        request({
+            url: url,
+            method: 'GET'
+        }, function (error, response) {
+            if(error) {
+                console.log('Error sending message: ', error);
+                next(error);
+            } else {        
+                console.log("SUCCESS GETTING VOTD");
+
+                let obj = response.body;
+                let title = obj.getElementByTagName("title")[0];
+                let text = obj.getElementByTagName("description")[0]
+
+                console.log(obj.getElementByTagName("title")[0]);
+                console.log(obj.getElementByTagName("description")[0]);
+
+                if (assistant.hasSurfaceCapability(assistant.SurfaceCapabilities.SCREEN_OUTPUT)) {
+                    assistant.ask(assistant.buildRichResponse()
+                        // Create a basic card and add it to the rich response
+                        .addSimpleResponse('Here is the verse of the day')
+                        .addBasicCard(assistant.buildBasicCard(text + " - " + title)
+                            .setTitle("Verse Of The Day")
+                            .addButton('Read more')
+                        )
+                    );
+                } else {
+                    assistant.tell('Here is the passage:  ' + strippedText);
+                }
+            }
+        });
+    }
+
     // Add handler functions to the action router.
     let actionRouter = new Map();
 
     actionRouter.set(GET_PASSAGE, getPassage);
     actionRouter.set(SEARCH_KEYWORD, keywordSearch);
-    // actionRouter.set(assistant.StandardIntents.OPTION, itemSelected);
+    actionRouter.set(GET_VOTD, getVOTD);
     actionRouter.set(SELECTED_PASSAGE, itemSelected);
 
     // Route requests to the proper handler functions via the action router.
