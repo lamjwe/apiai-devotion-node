@@ -127,7 +127,7 @@ app.post('/', function(req, res, next) {
                 let obj = JSON.parse(response.body);
                 // logObject('API call response ==> ', obj);
                 var text = obj.response["search"].result.passages[0]["text"];
-
+                var copyRight = striptags(obj.response["search"].result.passages[0]["copyright"]);
                 var strippedText = striptags(text);
                 
                 console.log(strippedText);
@@ -139,6 +139,7 @@ app.post('/', function(req, res, next) {
                             .setTitle(query)
                             .addButton('Read more')
                         )
+                        .addSimpleResponse(copyRight)
                     );
                 } else {
                     assistant.tell('Here is the passage:  ' + strippedText);
@@ -179,25 +180,6 @@ app.post('/', function(req, res, next) {
                 try {
                     var resultVerses = obj.response["search"].result.verses;
                     var resultToDisplay = "";
-                    var suggestions;
-                    var suggestionsList = [];
-                    if(obj.response["search"].result.spelling && 
-                        obj.response["search"].result.spelling.entries &&
-                            obj.response["search"].result.spelling.entries.suggestions) {
-                        suggestions = obj.response["search"].result.spelling.entries.suggestions;
-                        suggestions.forEach(function(suggestion){
-                            suggestionsList.push(suggestion["suggestion"]);
-                        });
-                    }
-                    // console.log("obj.response[\"search\"]: " + JSON.stringify(obj.response));
-                    console.log("obj.response[\"search\"].result.spelling: " + JSON.stringify(obj.response["search"].result["spelling"]));
-                    console.log("obj.response[\"search\"].result.spelling.entries: " + obj.response["search"].result.spelling.entries);
-                    console.log("obj.response[\"search\"].result.spelling.entries.suggestions: " + obj.response["search"].result.spelling.entries.suggestions);
-                    
-                    console.log("SUGGESTIONS: " + suggestions);
-                    console.log("SUGGESTIONS: " + suggestions);
-                    console.log("SUGGESTION List: " + suggestionsList);
-
 
                     console.log("======== DEBUG ========");
 
@@ -223,7 +205,7 @@ app.post('/', function(req, res, next) {
                     assistant.askWithList(assistant.buildRichResponse()
                         .addSimpleResponse('Here are the results: ')
                         .addSuggestions(
-                        suggestionsList),list
+                        obj.response["search"].result["spelling"]),list
                     );
 
                     console.log("DONE");
