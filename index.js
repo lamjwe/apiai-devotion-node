@@ -139,8 +139,8 @@ app.post('/', function(req, res, next) {
                             .setTitle(query)
                             .addButton('Read more')
                         )
-                        .addSimpleResponse(copyRight)
                     );
+                    assistant.ask({displayText: copyRight});
                 } else {
                     assistant.tell('Here is the passage:  ' + strippedText);
                 }
