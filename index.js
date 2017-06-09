@@ -31,6 +31,8 @@ app.post('/', function(req, res, next) {
     const START_VERSE_ARGUMENT = 'StartVerse';
     const END_VERSE_ARGUMENT = 'EndVerse';
     const KEYWORD_ARGUMENT = 'Keyword';
+    const FOUND_PASSAGE = 'Here is the passage you are looking for';
+    const FOUND_VOTD = 'Here is today\'s verse of the day';
     const API_KEY = 'c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN';
 
     const ASK_WEATHER_ACTION = 'askWeather';  // The action name from the API.AI intent
@@ -84,10 +86,10 @@ app.post('/', function(req, res, next) {
         var url = baseurl + query.passage;
         console.log("URL : " + url);
 
-        getPassageAndVerses(url, query.book + " Chapter " + query.chapter + ":" + query.start_verse + query.end_verse);
+        getPassageAndVerses(url, query.book + " Chapter " + query.chapter + ":" + query.start_verse + query.end_verse, FOUND_PASSAGE);
     }
 
-    function getPassageAndVerses(url, query) {
+    function getPassageAndVerses(url, query, speech) {
         var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
         request({
             url: url,
@@ -110,7 +112,7 @@ app.post('/', function(req, res, next) {
                 if (assistant.hasSurfaceCapability(assistant.SurfaceCapabilities.SCREEN_OUTPUT)) {
                     assistant.ask(assistant.buildRichResponse()
                         // Create a basic card and add it to the rich response
-                        .addSimpleResponse('Here is the passage you are looking for')
+                        .addSimpleResponse(speech)
                         .addBasicCard(assistant.buildBasicCard(strippedText)
                             .setTitle(query)
                             .addButton('Read more')
@@ -210,7 +212,7 @@ app.post('/', function(req, res, next) {
             var url = baseurl + replaced + "&version=eng-KJVA";
             console.log("URL : " + url);
 
-            getPassageAndVerses(url, param);
+            getPassageAndVerses(url, param, FOUND_PASSAGE);
         }
     }
 
@@ -237,7 +239,7 @@ app.post('/', function(req, res, next) {
                 var replaced = ref.split(' ').join('+');
                 var url = baseurl + replaced + "&version=eng-KJVA";
                 console.log("URL : " + url);
-                getPassageAndVerses(url, ref);
+                getPassageAndVerses(url, ref, FOUND_VOTD);
             }
         });
     }
