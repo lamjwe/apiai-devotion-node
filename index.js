@@ -219,7 +219,7 @@ app.post('/', function(req, res, next) {
         const baseURL = "https://www.bible.com/verse-of-the-day";
         
         request({
-            url: url,
+            url: baseURL,
             method: 'GET'
         }, function (error, response, html) {
             if(error) {
