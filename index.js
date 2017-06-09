@@ -35,9 +35,6 @@ app.post('/', function(req, res, next) {
     const FOUND_VOTD = 'Here is today\'s verse of the day';
     const API_KEY = 'c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN';
 
-    const ASK_WEATHER_ACTION = 'askWeather';  // The action name from the API.AI intent
-    const CITY_PARAMETER = 'geo-city'; // An API.ai parameter name
-
     function makeQueryGetPassage(app) {
         var book = app.getArgument(BOOK_ARGUMENT);
         if (!book) {
@@ -78,9 +75,7 @@ app.post('/', function(req, res, next) {
     // Create functions to handle intents here
     function getPassage(assistant) {
         console.log('Handling action: ' + GET_PASSAGE);
-
         var baseurl = "https://bibles.org/v2/passages.js?q[]=";
-        // app.tell('Here is the passage you are looking for : ');
         var query = makeQueryGetPassage(assistant);
 
         var url = baseurl + query.passage;
@@ -107,8 +102,6 @@ app.post('/', function(req, res, next) {
                 // logObject('API call response ==> ', obj);
                 var text = obj.response["search"].result.passages[0]["text"];
                 var strippedText = striptags(text);
-                
-                console.log(strippedText);
 
                 if (text == "") {
                     assistant.tell('Sorry, I cannot find the given passage.');
@@ -197,7 +190,6 @@ app.post('/', function(req, res, next) {
                 }
             }
         });
-
     }
 
     function itemSelected (app) {
@@ -266,12 +258,6 @@ app.use(function (err, req, res, next) {
   console.error(err.stack)
   res.status(500).send('Something broke!')
 })
-
-// Pretty print objects for logging.
-// function logObject(message, object, options) {
-//   console.log(message);
-//   console.log(prettyjson.render(object, options));
-// }
 
 // Listen for requests.
 let server = app.listen(process.env.PORT, function () {
