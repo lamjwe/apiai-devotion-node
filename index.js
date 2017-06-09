@@ -109,17 +109,22 @@ app.post('/', function(req, res, next) {
                 var strippedText = striptags(text);
                 
                 console.log(strippedText);
-                if (assistant.hasSurfaceCapability(assistant.SurfaceCapabilities.SCREEN_OUTPUT)) {
-                    assistant.ask(assistant.buildRichResponse()
-                        // Create a basic card and add it to the rich response
-                        .addSimpleResponse(speech)
-                        .addBasicCard(assistant.buildBasicCard(strippedText)
-                            .setTitle(query)
-                            .addButton('Read more')
-                        )
-                    );
+
+                if (text == "") {
+                    assistant.tell('Sorry, I cannot find the given passage.');
                 } else {
-                    assistant.tell('Here is the passage:  ' + strippedText);
+                    if (assistant.hasSurfaceCapability(assistant.SurfaceCapabilities.SCREEN_OUTPUT)) {
+                        assistant.ask(assistant.buildRichResponse()
+                            // Create a basic card and add it to the rich response
+                            .addSimpleResponse(speech)
+                            .addBasicCard(assistant.buildBasicCard(strippedText)
+                                .setTitle(query)
+                                .addButton('Read more')
+                            )
+                        );
+                    } else {
+                        assistant.tell('Here is the passage:  ' + strippedText);
+                    }
                 }
             }
         });
@@ -188,7 +193,7 @@ app.post('/', function(req, res, next) {
                     console.log("DONE");
                 } catch (err) {
                     console.error("ERROR == > ", err);
-                    assistant.tell('Sorry, cannot find the given passage.');
+                    assistant.tell('Sorry, I cannot find the given passage.');
                 }
             }
         });
