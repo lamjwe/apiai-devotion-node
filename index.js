@@ -189,8 +189,8 @@ app.post('/', function(req, res, next) {
                             suggestionsList.push(suggestion["suggestion"]);
                         });
                     }
-                    console.log("obj.response[\"search\"]: " + obj.response["search"]);
-                    console.log("obj.response[\"search\"].result.spelling: " + obj.response["search"].result.spelling);
+                    console.log("obj.response[\"search\"]: " + JSON.stringify(obj.response["search"]));
+                    console.log("obj.response[\"search\"].result.spelling: " + obj.response["search"].result["spelling"]);
                     console.log("obj.response[\"search\"].result.spelling.entries: " + obj.response["search"].result.spelling.entries);
                     console.log("obj.response[\"search\"].result.spelling.entries.suggestions: " + obj.response["search"].result.spelling.entries.suggestions);
                     
@@ -209,7 +209,7 @@ app.post('/', function(req, res, next) {
                         text = verse.text;
                         
                         var strippedText = striptags(text);
-                        console.log("STRIPPED TEXT: " + strippedText);
+                        //console.log("STRIPPED TEXT: " + strippedText);
                         console.log("verse reference : " + verse.reference);
                         // resultToDisplay += verse.reference + " \n\n" + strippedText + "\n\n";
 
