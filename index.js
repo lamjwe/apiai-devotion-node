@@ -179,6 +179,19 @@ app.post('/', function(req, res, next) {
                 try {
                     var resultVerses = obj.response["search"].result.verses;
                     var resultToDisplay = "";
+                    var suggestions;
+                    var suggestionsList = [];
+                    if(obj.response["search"].result.spelling && 
+                        obj.response["search"].result.spelling.entries &&
+                            obj.response["search"].result.spelling.entries.suggestions) {
+                        suggestions = obj.response["search"].result.spelling.entries.suggestions;
+                        suggestions.forEach(function(suggestion){
+                            suggestionsList.push(suggestion["suggestion"]);
+                        });
+                    }
+                    console.log("SUGGESTIONS: " + suggestions);
+                    console.log("SUGGESTION List: " + suggestionList);
+
 
                     console.log("======== DEBUG ========");
 
@@ -195,8 +208,7 @@ app.post('/', function(req, res, next) {
                         // resultToDisplay += verse.reference + " \n\n" + strippedText + "\n\n";
 
                         // Add the item to the list
-                        list.addItems(assistant.buildOptionItem(verse.reference,
-                        ['math', 'math and prime', 'prime numbers', 'prime'])
+                        list.addItems(assistant.buildOptionItem(verse.reference,[verse.reference])
                         .setTitle(verse.reference)
                         .setDescription(strippedText));
                         
@@ -205,7 +217,7 @@ app.post('/', function(req, res, next) {
                     assistant.askWithList(assistant.buildRichResponse()
                         .addSimpleResponse('Here are the results: ')
                         .addSuggestions(
-                        ['Basic Card', 'List', 'Carousel', 'Suggestions']),list
+                        suggestionsList),list
                     );
 
                     console.log("DONE");
