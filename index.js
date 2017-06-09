@@ -189,6 +189,12 @@ app.post('/', function(req, res, next) {
                             suggestionsList.push(suggestion["suggestion"]);
                         });
                     }
+                    console.log("obj.response[\"search\"]: " + obj.response["search"]);
+                    console.log("obj.response[\"search\"].result.spelling: " + obj.response["search"].result.spelling);
+                    console.log("obj.response[\"search\"].result.spelling.entries: " + obj.response["search"].result.spelling.entries);
+                    console.log("obj.response[\"search\"].result.spelling.entries.suggestions: " + obj.response["search"].result.spelling.entries.suggestions);
+                    
+                    console.log("SUGGESTIONS: " + suggestions);
                     console.log("SUGGESTIONS: " + suggestions);
                     console.log("SUGGESTION List: " + suggestionsList);
 
