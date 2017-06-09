@@ -11,11 +11,12 @@
   "dependencies": {
     "actions-on-google": "^1.1.1",
     "body-parser": "^1.15.0",
+    "cheerio": "^1.0.0-rc.1",
     "es6-map": "^0.1.5",
     "express": "^4.13.4",
+    "prettyjson": "^1.2.1",
     "request": "^2.81.0",
     "striptags": "^3.0.1",
-    "prettyjson": "^1.2.1",
-		"underscore.string": "^3.3.4"
+    "underscore.string": "^3.3.4"
   }
 }

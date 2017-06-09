@@ -6,6 +6,7 @@ const request = require('request');
 const app = express();
 const Map = require('es6-map');
 const striptags = require('striptags');
+const cheerio = require('cheerio');
 
 // Pretty JSON output for logs
 const prettyjson = require('prettyjson');
@@ -215,30 +216,28 @@ app.post('/', function(req, res, next) {
 
     function getVOTD (assistant) {
         // Get the user's selection
-        const baseURL = "https://bible.org/votd/";
+        const baseURL = "https://www.bible.com/verse-of-the-day";
         
         request({
             url: url,
             method: 'GET'
-        }, function (error, response) {
+        }, function (error, response, html) {
             if(error) {
                 console.log('Error sending message: ', error);
                 next(error);
             } else {        
                 console.log("SUCCESS GETTING VOTD");
+                var $ = cheerio.load(html);
+                var title = $('title').text();
 
-                let obj = response.body;
-                let title = obj.getElementByTagName("title")[0];
-                let text = obj.getElementByTagName("description")[0]
+                console.log("title: " + title);
 
-                console.log(obj.getElementByTagName("title")[0]);
-                console.log(obj.getElementByTagName("description")[0]);
 
                 if (assistant.hasSurfaceCapability(assistant.SurfaceCapabilities.SCREEN_OUTPUT)) {
                     assistant.ask(assistant.buildRichResponse()
                         // Create a basic card and add it to the rich response
                         .addSimpleResponse('Here is the verse of the day')
-                        .addBasicCard(assistant.buildBasicCard(text + " - " + title)
+                        .addBasicCard(assistant.buildBasicCard(" - " + title)
                             .setTitle("Verse Of The Day")
                             .addButton('Read more')
                         )
