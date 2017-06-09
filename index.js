@@ -190,7 +190,7 @@ app.post('/', function(req, res, next) {
                         });
                     }
                     console.log("SUGGESTIONS: " + suggestions);
-                    console.log("SUGGESTION List: " + suggestionList);
+                    console.log("SUGGESTION List: " + suggestionsList);
 
 
                     console.log("======== DEBUG ========");
@@ -223,7 +223,7 @@ app.post('/', function(req, res, next) {
                     console.log("DONE");
                 } catch (err) {
                     console.error("ERROR == > ", err);
-                    assistant.tell('Sorry, cannot not find the given passage.');
+                    assistant.tell('Sorry, cannot find the given passage.');
                 }
             }
         });
