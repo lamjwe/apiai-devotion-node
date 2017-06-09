@@ -231,20 +231,13 @@ app.post('/', function(req, res, next) {
                 var title = $('title').text();
 
                 console.log("title: " + title);
+                var ref = title.split("Verse of the Day - ")[1].split(" (NLT)")[0];
 
-
-                if (assistant.hasSurfaceCapability(assistant.SurfaceCapabilities.SCREEN_OUTPUT)) {
-                    assistant.ask(assistant.buildRichResponse()
-                        // Create a basic card and add it to the rich response
-                        .addSimpleResponse('Here is the verse of the day')
-                        .addBasicCard(assistant.buildBasicCard(" - " + title)
-                            .setTitle("Verse Of The Day")
-                            .addButton('Read more')
-                        )
-                    );
-                } else {
-                    assistant.tell('Here is the passage:  ' + strippedText);
-                }
+                var baseurl = "https://bibles.org/v2/passages.js?q[]=";
+                var replaced = param.split(' ').join('+');
+                var url = baseurl + replaced + "&version=eng-KJVA";
+                console.log("URL : " + url);
+                getPassageAndVerses(url, ref.split(' ').join('+'));
             }
         });
     }
