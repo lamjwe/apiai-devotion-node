@@ -85,7 +85,7 @@ app.post('/', function(req, res, next) {
     }
 
     function getPassageAndVerse(url, query, speech) {
-        var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
+        var auth = new Buffer(API_KEY + ':' + 'X').toString('base64');
         request({
             url: url,
             headers: {
