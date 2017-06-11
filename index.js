@@ -33,7 +33,7 @@ app.post('/', function(req, res, next) {
     const KEYWORD_ARGUMENT = 'Keyword';
     const FOUND_PASSAGE = 'Here is the passage you are looking for';
     const FOUND_VOTD = 'Here is today\'s verse of the day';
-    const API_KEY = 'c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN';
+    const API_KEY = '7Fwfx6MMbEDjSP0l12RGeXFDbcsspEU7HHGdqI66';
 
     function makeQueryGetPassage(app) {
         var book = app.getArgument(BOOK_ARGUMENT);
