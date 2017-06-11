@@ -81,10 +81,10 @@ app.post('/', function(req, res, next) {
         var url = baseurl + query.passage;
         console.log("URL : " + url);
 
-        getPassageAndVerses(url, query.book + " Chapter " + query.chapter + ":" + query.start_verse + query.end_verse, FOUND_PASSAGE);
+        getPassageAndVerse(url, query.book + " Chapter " + query.chapter + ":" + query.start_verse + query.end_verse, FOUND_PASSAGE);
     }
 
-    function getPassageAndVerses(url, query, speech) {
+    function getPassageAndVerse(url, query, speech) {
         var auth = new Buffer('c1QoJ6WPjJGycevbco8vJcWrnQdAxO5n3bUN04jN' + ':' + 'X').toString('base64');
         request({
             url: url,
@@ -149,7 +149,6 @@ app.post('/', function(req, res, next) {
                 next(error);
             } else {
                 console.log("SUCCESS GETTING RESULTS FROM KEYWORD SEARCH: ");
-                console.log("+++++++++++++++++++++++++++");
                 var obj = JSON.parse(response.body);
                 var text;
                 try {
@@ -162,13 +161,9 @@ app.post('/', function(req, res, next) {
                     var list = assistant.buildList('Here are some search results for ' + query);
                     
                     resultVerses.forEach(function(verse) {
-                        
                         text = verse.text;
-                        
                         var strippedText = striptags(text);
-                        //console.log("STRIPPED TEXT: " + strippedText);
                         console.log("verse reference : " + verse.reference);
-                        // resultToDisplay += verse.reference + " \n\n" + strippedText + "\n\n";
 
                         // Add the item to the list
                         list.addItems(assistant.buildOptionItem(verse.reference,[verse.reference])
@@ -209,7 +204,7 @@ app.post('/', function(req, res, next) {
             var url = baseurl + replaced + "&version=eng-KJVA";
             console.log("URL : " + url);
 
-            getPassageAndVerses(url, param, FOUND_PASSAGE);
+            getPassageAndVerse(url, param, FOUND_PASSAGE);
         }
     }
 
@@ -236,7 +231,7 @@ app.post('/', function(req, res, next) {
                 var replaced = ref.split(' ').join('+');
                 var url = baseurl + replaced + "&version=eng-KJVA";
                 console.log("URL : " + url);
-                getPassageAndVerses(url, ref, FOUND_VOTD);
+                getPassageAndVerse(url, ref, FOUND_VOTD);
             }
         });
     }
