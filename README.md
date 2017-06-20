@@ -1,6 +1,6 @@
 # Actions on Google - Bible Quick Search
-fw
-This is a simple Google Assistant app with three features:
+
+Bible Quick Search is a Google Assistant app with three main features:
   - Help users do a quick search for a verse or passage without opening any apps or browser
   - Help users look up verses by a keyword
   - Displays the verse of the day
