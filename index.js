@@ -31,9 +31,9 @@ app.post('/', function(req, res, next) {
     const START_VERSE_ARGUMENT = 'StartVerse';
     const END_VERSE_ARGUMENT = 'EndVerse';
     const KEYWORD_ARGUMENT = 'Keyword';
-    const FOUND_PASSAGE = 'Here is the passage you are looking for';
-    const FOUND_VOTD = 'Here is today\'s verse of the day';
-    const API_KEY = '7Fwfx6MMbEDjSP0l12RGeXFDbcsspEU7HHGdqI66';
+    const FOUND_PASSAGE = 'Here is the passage that you are looking for. What else can I do for you?';
+    const FOUND_VOTD = 'Here is today\'s verse of the day. What else can I do for you?';
+    const API_KEY = 'API_KEY';
 
     function makeQueryGetPassage(app) {
         var book = app.getArgument(BOOK_ARGUMENT);
@@ -100,24 +100,29 @@ app.post('/', function(req, res, next) {
                 console.log("SUCCESS: ");
                 let obj = JSON.parse(response.body);
                 // logObject('API call response ==> ', obj);
-                var text = obj.response["search"].result.passages[0]["text"];
-                var strippedText = striptags(text);
+                try {
+                    var text = obj.response["search"].result.passages[0]["text"];
+                    var strippedText = striptags(text);
 
-                if (text == "") {
-                    assistant.tell('Sorry, I cannot find the given passage.');
-                } else {
-                    if (assistant.hasSurfaceCapability(assistant.SurfaceCapabilities.SCREEN_OUTPUT)) {
-                        assistant.ask(assistant.buildRichResponse()
-                            // Create a basic card and add it to the rich response
-                            .addSimpleResponse(speech)
-                            .addBasicCard(assistant.buildBasicCard(strippedText)
-                                .setTitle(query)
-                                .addButton('Read more')
-                            )
-                        );
+                    if (text == "") {
+                        assistant.ask('Sorry, I cannot find the given passage. What else can I do for you?');
                     } else {
-                        assistant.tell('Here is the passage:  ' + strippedText);
+                        if (assistant.hasSurfaceCapability(assistant.SurfaceCapabilities.SCREEN_OUTPUT)) {
+                            assistant.ask(assistant.buildRichResponse()
+                                // Create a basic card and add it to the rich response
+                                .addSimpleResponse(speech)
+                                .addBasicCard(assistant.buildBasicCard(strippedText)
+                                    .setTitle(query)
+                                    .addButton('Read more')
+                                )
+                            );
+                        } else {
+                            assistant.tell('Here is the passage:  ' + strippedText);
+                        }
                     }
+                } catch (err) {
+                    console.log("DEBUG - ERROR : " + err);
+                    assistant.ask('Sorry, I cannot find the given passage. What else can I do for you?');
                 }
             }
         });
@@ -173,7 +178,7 @@ app.post('/', function(req, res, next) {
                     });
 
                     assistant.askWithList(assistant.buildRichResponse()
-                        .addSimpleResponse('Here are the results: ')
+                        .addSimpleResponse('Here are the results. Select an item from the list to show the full verse. What else can I do for you?')
                         .addSuggestions(
                         obj.response["search"].result["spelling"]),list
                     );
@@ -181,7 +186,7 @@ app.post('/', function(req, res, next) {
                     console.log("DONE");
                 } catch (err) {
                     console.error("ERROR == > ", err);
-                    assistant.tell('Sorry, I cannot find the given passage.');
+                    assistant.ask('Sorry, I cannot find the given passage. What else can I do for you?');
                 }
             }
         });
@@ -195,7 +200,7 @@ app.post('/', function(req, res, next) {
 
         // Compare the user's selections to each of the item's keys
         if (!param) {
-            app.ask('You did not select any item from the list or carousel');
+            app.ask('You did not select any item from the list or carousel. What else can I do for you?');
         } else {
             console.log('Handling action: ' + SELECTED_PASSAGE);
 
@@ -225,7 +230,7 @@ app.post('/', function(req, res, next) {
                 var title = $('title').text();
 
                 console.log("title: " + title);
-                var ref = title.split("Verse of the Day - ")[1].split(" (NLT)")[0];
+                var ref = title.split("Verse of the Day - ")[1].split(" (")[0];
 
                 var baseurl = "https://bibles.org/v2/passages.js?q[]=";
                 var replaced = ref.split(' ').join('+');
@@ -243,6 +248,7 @@ app.post('/', function(req, res, next) {
     actionRouter.set(SEARCH_KEYWORD, keywordSearch);
     actionRouter.set(GET_VOTD, getVOTD);
     actionRouter.set(SELECTED_PASSAGE, itemSelected);
+    actionRouter.set(assistant.StandardIntents.OPTION, itemSelected);
 
     // Route requests to the proper handler functions via the action router.
     assistant.handleRequest(actionRouter);
